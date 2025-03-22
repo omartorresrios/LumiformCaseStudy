@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import LumiformCaseStudy
 
 final class ModelTests: XCTestCase {
 	
@@ -19,5 +20,22 @@ final class ModelTests: XCTestCase {
 			return
 		}
 		testData = try Data(contentsOf: URL(fileURLWithPath: path))
+	}
+	
+	func testDecodeRootStructure() {
+		do {
+			let decoder = JSONDecoder()
+			let rootItem = try decoder.decode(GenericItem.self, from: testData)
+			
+			XCTAssertNotNil(rootItem.asPage, "Root item should be a Page")
+			
+			if let page = rootItem.asPage {
+				XCTAssertEqual(page.type, "page")
+				XCTAssertEqual(page.title, "Main Page")
+				XCTAssertEqual(page.items.count, 3)
+			}
+		} catch {
+			XCTFail("JSON decoding failed: \(error)")
+		}
 	}
 }
