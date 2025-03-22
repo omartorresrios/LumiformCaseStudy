@@ -38,4 +38,24 @@ final class ModelTests: XCTestCase {
 			XCTFail("JSON decoding failed: \(error)")
 		}
 	}
+	
+	func testPageStructure() {
+		do {
+			let decoder = JSONDecoder()
+			let rootItem = try decoder.decode(GenericItem.self, from: testData)
+			
+			guard let page = rootItem.asPage else {
+				XCTFail("Root should be a Page")
+				return
+			}
+			
+			XCTAssertNotNil(page.items[0].asSection)
+			
+			if let firstSection = page.items[0].asSection {
+				XCTAssertEqual(firstSection.title, "Introduction")
+			}
+		} catch {
+			XCTFail("JSON decoding failed: \(error)")
+		}
+	}
 }
