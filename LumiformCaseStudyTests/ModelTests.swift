@@ -205,4 +205,21 @@ final class ModelTests: XCTestCase {
 			XCTAssertTrue(error is DecodingError, "Error should be a DecodingError")
 		}
 	}
+	
+	func testTypeErasureAndRetrieval() {
+		let textQuestion = TextQuestion(type: "text", title: "Test Question")
+		let section = Section(type: "section", title: "Test Section", items: [])
+		
+		let anyTextQuestion = GenericItem(textQuestion)
+		let anySection = GenericItem(section)
+		
+		XCTAssertNotNil(anyTextQuestion.asTextQuestion)
+		XCTAssertNil(anyTextQuestion.asSection)
+		
+		XCTAssertNotNil(anySection.asSection)
+		XCTAssertNil(anySection.asTextQuestion)
+		
+		XCTAssertNotNil(anyTextQuestion.get() as TextQuestion?)
+		XCTAssertNil(anyTextQuestion.get() as Section?)
+	}
 }

@@ -9,13 +9,13 @@ protocol Item: Decodable {
 	var type: String { get }
 }
 
-class Page: Item {
+struct Page: Item {
 	let type: String
 	let title: String
 	let items: [GenericItem]
 }
 
-class Section: Item {
+struct Section: Item {
 	let type: String
 	let title: String
 	let items: [GenericItem]
@@ -25,12 +25,12 @@ protocol Question: Item {
 	var title: String { get }
 }
 
-class TextQuestion: Question {
+struct TextQuestion: Question {
 	let type: String
 	let title: String
 }
 
-class ImageQuestion: Question {
+struct ImageQuestion: Question {
 	let type: String
 	let title: String
 	let src: String
@@ -43,6 +43,14 @@ struct GenericItem: Decodable {
 	var asSection: Section? { return _item as? Section }
 	var asTextQuestion: TextQuestion? { return _item as? TextQuestion }
 	var asImageQuestion: ImageQuestion? { return _item as? ImageQuestion }
+	
+	func get<T: Item>() -> T? {
+		return _item as? T
+	}
+	
+	init(_ item: Item) {
+		self._item = item
+	}
 	
 	init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
