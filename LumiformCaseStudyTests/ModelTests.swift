@@ -126,4 +126,24 @@ final class ModelTests: XCTestCase {
 			XCTFail("JSON decoding failed: \(error)")
 		}
 	}
+	
+	func testImageQuestions() {
+		do {
+			let decoder = JSONDecoder()
+			let rootItem = try decoder.decode(GenericItem.self, from: testData)
+			
+			guard let page = rootItem.asPage,
+				  let section = page.items[0].asSection,
+				  let imageQuestion = section.items[1].asImageQuestion else {
+				XCTFail("Failed to find image question")
+				return
+			}
+			
+			XCTAssertEqual(imageQuestion.type, "image")
+			XCTAssertEqual(imageQuestion.title, "Welcome Image")
+			XCTAssertEqual(imageQuestion.src, "https://robohash.org/280?&set=set4&size=400x400")
+		} catch {
+			XCTFail("JSON decoding failed: \(error)")
+		}
+	}
 }
