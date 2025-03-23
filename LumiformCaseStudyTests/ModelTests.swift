@@ -79,4 +79,32 @@ final class ModelTests: XCTestCase {
 			XCTFail("JSON decoding failed: \(error)")
 		}
 	}
+	
+	func testNestedSections() {
+		do {
+			let decoder = JSONDecoder()
+			let rootItem = try decoder.decode(GenericItem.self, from: testData)
+			
+			guard let page = rootItem.asPage,
+				  let chapterSection = page.items[1].asSection else {
+				XCTFail("Failed to find Chapter 1 section")
+				return
+			}
+			
+			XCTAssertEqual(chapterSection.title, "Chapter 1")
+			XCTAssertEqual(chapterSection.items.count, 2)
+			
+			let nestedSection = chapterSection.items[1].asSection
+			XCTAssertNotNil(nestedSection, "Second item in Chapter 1 should be a subsection")
+			
+			if let subsection = nestedSection {
+				XCTAssertEqual(subsection.title, "Subsection 1.1")
+				XCTAssertEqual(subsection.items.count, 2)
+				XCTAssertNotNil(subsection.items[0].asTextQuestion)
+				XCTAssertNotNil(subsection.items[1].asImageQuestion)
+			}
+		} catch {
+			XCTFail("JSON decoding failed: \(error)")
+		}
+	}
 }
