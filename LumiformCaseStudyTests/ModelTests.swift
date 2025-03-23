@@ -146,4 +146,30 @@ final class ModelTests: XCTestCase {
 			XCTFail("JSON decoding failed: \(error)")
 		}
 	}
+	
+	func testNestedPages() {
+		do {
+			let decoder = JSONDecoder()
+			let rootItem = try decoder.decode(GenericItem.self, from: testData)
+			
+			guard let page = rootItem.asPage else {
+				XCTFail("Root should be a Page")
+				return
+			}
+			
+			let nestedPage = page.items[2].asPage
+			XCTAssertNotNil(nestedPage, "Third item should be a nested page")
+			
+			if let secondPage = nestedPage {
+				XCTAssertEqual(secondPage.title, "Second Page")
+				XCTAssertEqual(secondPage.items.count, 1)
+				
+				let nestedSection = secondPage.items[0].asSection
+				XCTAssertNotNil(nestedSection)
+				XCTAssertEqual(nestedSection?.title, "Chapter 2")
+			}
+		} catch {
+			XCTFail("JSON decoding failed: \(error)")
+		}
+	}
 }
