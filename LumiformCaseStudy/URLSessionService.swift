@@ -34,3 +34,14 @@ final class URLSessionService: ServiceProtocol {
 		}.resume()
 	}
 }
+
+enum FetchDataResult {
+	case success(GenericItem)
+	case failure(NetworkError)
+}
+
+enum NetworkError: Error {
+	case invalidData
+	case connectivity
+	case invalidResponse(statusCode: Int)
+}
