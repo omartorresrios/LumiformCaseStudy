@@ -189,4 +189,20 @@ final class ModelTests: XCTestCase {
 			XCTAssertTrue(error is DecodingError, "Error should be a DecodingError")
 		}
 	}
+	
+	func testMissingRequiredFields() {
+		let invalidJSON = """
+   {
+   "type": "text"
+   }
+   """.data(using: .utf8)!
+		
+		do {
+			let decoder = JSONDecoder()
+			_ = try decoder.decode(GenericItem.self, from: invalidJSON)
+			XCTFail("Decoding should fail with missing required fields")
+		} catch {
+			XCTAssertTrue(error is DecodingError, "Error should be a DecodingError")
+		}
+	}
 }
