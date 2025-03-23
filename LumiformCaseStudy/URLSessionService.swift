@@ -46,6 +46,27 @@ enum NetworkError: Error {
 	case invalidResponse(statusCode: Int)
 }
 
+final class ItemRepository {
+	private let networkService: ServiceProtocol
+	private let itemMapper: GenericItemMapper
+	
+	init(networkService: ServiceProtocol, itemMapper: GenericItemMapper) {
+		self.networkService = networkService
+		self.itemMapper = itemMapper
+	}
+	
+	func fetchItem(completion: @escaping (FetchDataResult) -> Void) {
+		networkService.fetchData { result in
+			switch result {
+			case let .success(data, response):
+				completion(GenericItemMapper.map(data, response))
+			case .failure(let error):
+				completion(.failure(.connectivity))
+			}
+		}
+	}
+}
+
 final class GenericItemMapper {
 	
 	static func map(_ data: Data, _ response: HTTPURLResponse) -> FetchDataResult {
