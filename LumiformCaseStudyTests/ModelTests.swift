@@ -172,4 +172,21 @@ final class ModelTests: XCTestCase {
 			XCTFail("JSON decoding failed: \(error)")
 		}
 	}
+	
+	func testInvalidTypeHandling() {
+		let invalidJSON = """
+   {
+   "type": "invalid_type",
+   "title": "Invalid Item"
+   }
+   """.data(using: .utf8)!
+		
+		do {
+			let decoder = JSONDecoder()
+			_ = try decoder.decode(GenericItem.self, from: invalidJSON)
+			XCTFail("Decoding should fail with invalid type")
+		} catch {
+			XCTAssertTrue(error is DecodingError, "Error should be a DecodingError")
+		}
+	}
 }
