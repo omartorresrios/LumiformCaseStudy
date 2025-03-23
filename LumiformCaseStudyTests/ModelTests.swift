@@ -107,4 +107,23 @@ final class ModelTests: XCTestCase {
 			XCTFail("JSON decoding failed: \(error)")
 		}
 	}
+	
+	func testTextQuestions() {
+		do {
+			let decoder = JSONDecoder()
+			let rootItem = try decoder.decode(GenericItem.self, from: testData)
+			
+			guard let page = rootItem.asPage,
+				  let section = page.items[0].asSection,
+				  let textQuestion = section.items[0].asTextQuestion else {
+				XCTFail("Failed to find text question")
+				return
+			}
+			
+			XCTAssertEqual(textQuestion.type, "text")
+			XCTAssertEqual(textQuestion.title, "Welcome to the main page!")
+		} catch {
+			XCTFail("JSON decoding failed: \(error)")
+		}
+	}
 }
