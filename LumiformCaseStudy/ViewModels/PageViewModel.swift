@@ -13,15 +13,17 @@ protocol GenericItemViewModel {
 
 final class PageViewModel: GenericItemViewModel {
 	enum ViewState {
+		case idle
 		case loading
 		case loaded([GenericItemViewModel])
+		case error(Error)
 	}
 	
 	private let repository: GenericItemRepositoryProtocol
 	var type: String { return "page" }
 	var stateChanged: ((ViewState) -> Void)?
 	
-	private(set) var currentState: ViewState = .loading {
+	private(set) var currentState: ViewState = .idle {
 		didSet {
 			stateChanged?(currentState)
 		}
@@ -31,7 +33,7 @@ final class PageViewModel: GenericItemViewModel {
 		switch currentState {
 		case .loaded(let viewModels):
 			return viewModels
-		case .loading:
+		default:
 			return []
 		}
 	}
@@ -43,6 +45,7 @@ final class PageViewModel: GenericItemViewModel {
 	}
 	
 	func fetchItems() {
+		currentState = .loading
 		repository.fetchItem { [weak self] result in
 			guard let self = self else { return }
 			
@@ -54,7 +57,7 @@ final class PageViewModel: GenericItemViewModel {
 					self.currentState = .loaded(viewModels)
 				}
 			case .failure(let error):
-				break
+				self.currentState = .error(error)
 			}
 		}
 	}

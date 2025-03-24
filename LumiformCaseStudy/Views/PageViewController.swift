@@ -10,6 +10,15 @@ import UIKit
 final class PageViewController: UIViewController {
 	private let viewModel: PageViewModel
 	private let tableView = UITableView()
+	private let activityIndicator = UIActivityIndicatorView(style: .large)
+	
+	private let errorLabel: UILabel = {
+		let label = UILabel()
+		label.textAlignment = .center
+		label.numberOfLines = 0
+		label.textColor = .red
+		return label
+	}()
 	
 	init(viewModel: PageViewModel) {
 		self.viewModel = viewModel
@@ -31,12 +40,22 @@ final class PageViewController: UIViewController {
 			guard let self = self else { return }
 			
 			switch state {
+			case .idle:
+				self.activityIndicator.stopAnimating()
+				self.errorLabel.isHidden = true
+			case .loading:
+				self.activityIndicator.startAnimating()
+				self.errorLabel.isHidden = true
 			case .loaded:
 				DispatchQueue.main.async {
+					self.activityIndicator.stopAnimating()
+					self.errorLabel.isHidden = true
 					self.tableView.reloadData()
 				}
-			default:
-				break
+			case .error(let error):
+				self.activityIndicator.stopAnimating()
+				self.errorLabel.isHidden = false
+				self.errorLabel.text = "Error: \(error.localizedDescription)"
 			}
 		}
 		viewModel.fetchItems()
@@ -58,11 +77,26 @@ final class PageViewController: UIViewController {
 		
 		view.addSubview(tableView)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
+		
+		view.addSubview(activityIndicator)
+		activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+		
+		view.addSubview(errorLabel)
+		errorLabel.translatesAutoresizingMaskIntoConstraints = false
+		
 		NSLayoutConstraint.activate([
 			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+			
+			activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			
+			errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+			errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
 		])
 	}
 	
