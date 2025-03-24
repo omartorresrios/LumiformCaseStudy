@@ -48,8 +48,8 @@ final class SectionCell: UITableViewCell {
 		])
 	}
 	
-	func configure() {
-		titleLabel.text = "Introduction"
+	func configure(with viewModel: SectionViewModel) {
+		titleLabel.text = viewModel.section.title
 	}
 }
 

@@ -66,8 +66,8 @@ final class ImageQuestionCell: UITableViewCell {
 		])
 	}
 	
-	func configure() {
-		titleLabel.text = "Image question title"
+	func configure(with viewModel: ImageQuestionViewModel) {
+		titleLabel.text = viewModel.question.title
 	}
 	
 	@objc private func imageTapped() { }

@@ -8,9 +8,11 @@
 import UIKit
 
 final class PageViewController: UIViewController {
+	private let viewModel: PageViewModel
 	private let tableView = UITableView()
 	
-	init() {
+	init(viewModel: PageViewModel) {
+		self.viewModel = viewModel
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -46,15 +48,71 @@ final class PageViewController: UIViewController {
 			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
 		])
 	}
+	
+	private func flattenedItems() -> [GenericItemViewModel] {
+		var result: [GenericItemViewModel] = []
+		
+		for item in viewModel.items {
+			result.append(item)
+			
+			if let sectionViewModel = item as? SectionViewModel {
+				result.append(contentsOf: flattenItems(for: sectionViewModel))
+			} else if let pageViewModel = item as? PageViewModel {
+				result.append(contentsOf: pageViewModel.items)
+			}
+		}
+		
+		return result
+	}
+	
+	private func flattenItems(for sectionViewModel: SectionViewModel) -> [GenericItemViewModel] {
+		var result: [GenericItemViewModel] = []
+		
+		for item in sectionViewModel.items {
+			result.append(item)
+			
+			if let nestedSection = item as? SectionViewModel {
+				result.append(contentsOf: flattenItems(for: nestedSection))
+			}
+		}
+		
+		return result
+	}
 }
 
 extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return 1
+		return flattenedItems().count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "SectionCell", for: indexPath) as! SectionCell
-		return cell
+		let item = flattenedItems()[indexPath.row]
+		
+		switch item {
+		case let pageViewModel as PageViewModel:
+			let cell = UITableViewCell(style: .default, reuseIdentifier: "PageCell")
+			cell.textLabel?.text = pageViewModel.page.title
+			cell.textLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
+			cell.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
+			return cell
+			
+		case let sectionViewModel as SectionViewModel:
+			let cell = tableView.dequeueReusableCell(withIdentifier: "SectionCell", for: indexPath) as! SectionCell
+			cell.configure(with: sectionViewModel)
+			return cell
+			
+		case let textQuestionViewModel as TextQuestionViewModel:
+			let cell = tableView.dequeueReusableCell(withIdentifier: "TextQuestionCell", for: indexPath) as! TextQuestionCell
+			cell.configure(with: textQuestionViewModel)
+			return cell
+			
+		case let imageQuestionViewModel as ImageQuestionViewModel:
+			let cell = tableView.dequeueReusableCell(withIdentifier: "ImageQuestionCell", for: indexPath) as! ImageQuestionCell
+			cell.configure(with: imageQuestionViewModel)
+			return cell
+			
+		default:
+			return UITableViewCell()
+		}
 	}
 }
