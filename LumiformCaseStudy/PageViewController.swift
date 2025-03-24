@@ -34,6 +34,8 @@ final class PageViewController: UIViewController {
 		tableView.estimatedRowHeight = 100
 		tableView.rowHeight = UITableView.automaticDimension
 		
+		tableView.register(SectionCell.self, forCellReuseIdentifier: "SectionCell")
+		
 		view.addSubview(tableView)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		NSLayoutConstraint.activate([
@@ -47,10 +49,11 @@ final class PageViewController: UIViewController {
 
 extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return 3
+		return 1
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		return UITableViewCell()
+		let cell = tableView.dequeueReusableCell(withIdentifier: "SectionCell", for: indexPath) as! SectionCell
+		return cell
 	}
 }
