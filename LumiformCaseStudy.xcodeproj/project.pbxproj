@@ -22,6 +22,7 @@
 		24FBD3A42D908CF6006ABCDD /* GenericItemMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3A32D908CF6006ABCDD /* GenericItemMapper.swift */; };
 		24FBD3A62D90912B006ABCDD /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3A52D90912B006ABCDD /* PageViewController.swift */; };
 		24FBD3A82D91C49F006ABCDD /* SectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3A72D91C49F006ABCDD /* SectionCell.swift */; };
+		24FBD3AA2D91C508006ABCDD /* TextQuestionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3A92D91C508006ABCDD /* TextQuestionCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		24FBD3A32D908CF6006ABCDD /* GenericItemMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericItemMapper.swift; sourceTree = "<group>"; };
 		24FBD3A52D90912B006ABCDD /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		24FBD3A72D91C49F006ABCDD /* SectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionCell.swift; sourceTree = "<group>"; };
+		24FBD3A92D91C508006ABCDD /* TextQuestionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextQuestionCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 				24FBD3862D8F2C48006ABCDD /* testdata.json */,
 				24FBD3A52D90912B006ABCDD /* PageViewController.swift */,
 				24FBD3A72D91C49F006ABCDD /* SectionCell.swift */,
+				24FBD3A92D91C508006ABCDD /* TextQuestionCell.swift */,
 			);
 			path = LumiformCaseStudy;
 			sourceTree = "<group>";
@@ -253,6 +256,7 @@
 				24FBD3A42D908CF6006ABCDD /* GenericItemMapper.swift in Sources */,
 				24FBD39C2D908C78006ABCDD /* ServiceProtocol.swift in Sources */,
 				24FBD3A62D90912B006ABCDD /* PageViewController.swift in Sources */,
+				24FBD3AA2D91C508006ABCDD /* TextQuestionCell.swift in Sources */,
 				2475C75B2D8F248A00CAECF8 /* SceneDelegate.swift in Sources */,
 				24FBD3832D8F287D006ABCDD /* Models.swift in Sources */,
 			);

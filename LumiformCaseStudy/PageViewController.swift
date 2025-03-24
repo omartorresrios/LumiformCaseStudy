@@ -35,6 +35,7 @@ final class PageViewController: UIViewController {
 		tableView.rowHeight = UITableView.automaticDimension
 		
 		tableView.register(SectionCell.self, forCellReuseIdentifier: "SectionCell")
+		tableView.register(TextQuestionCell.self, forCellReuseIdentifier: "TextQuestionCell")
 		
 		view.addSubview(tableView)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
