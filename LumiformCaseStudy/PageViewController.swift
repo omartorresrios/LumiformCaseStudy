@@ -36,6 +36,7 @@ final class PageViewController: UIViewController {
 		
 		tableView.register(SectionCell.self, forCellReuseIdentifier: "SectionCell")
 		tableView.register(TextQuestionCell.self, forCellReuseIdentifier: "TextQuestionCell")
+		tableView.register(ImageQuestionCell.self, forCellReuseIdentifier: "ImageQuestionCell")
 		
 		view.addSubview(tableView)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
