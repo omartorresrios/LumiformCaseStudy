@@ -11,15 +11,30 @@ import XCTest
 final class PageViewModelTests: XCTestCase {
 	
 	func testInitialState() {
-		let sut = makeSut()
+		let (sut, _) = makeSut()
 		XCTAssertEqual(sut.type, "page")
 		XCTAssertTrue(sut.items.isEmpty)
 	}
+	
+	func testFetchItemsLoading() {
+		let (sut, mockRepository) = makeSut()
+		var capturedStates: [PageViewModel.ViewState] = []
+		
+		sut.stateChanged = { state in
+			capturedStates.append(state)
+		}
+		
+		mockRepository.fetchItemClosure = { _ in }
+		
+		sut.fetchItems()
+		
+		XCTAssertEqual(capturedStates.first, .loading)
+	}
 
-	private func makeSut() -> PageViewModel {
+	private func makeSut() -> (PageViewModel, MockItemRepository)  {
 		let mockRepository = MockItemRepository()
 		let viewModel = PageViewModel(repository: mockRepository)
-		return viewModel
+		return (viewModel, mockRepository)
 	}
 }
 
