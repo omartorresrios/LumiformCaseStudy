@@ -23,8 +23,25 @@ final class PageViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupUI()
+		setupViewModel()
 	}
 	
+	private func setupViewModel() {
+		viewModel.stateChanged = { [weak self] state in
+			guard let self = self else { return }
+			
+			switch state {
+			case .loaded:
+				DispatchQueue.main.async {
+					self.tableView.reloadData()
+				}
+			default:
+				break
+			}
+		}
+		viewModel.fetchItems()
+	}
+
 	private func setupUI() {
 		title = "Main Page"
 		view.backgroundColor = .white
@@ -91,7 +108,7 @@ extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 		switch item {
 		case let pageViewModel as PageViewModel:
 			let cell = UITableViewCell(style: .default, reuseIdentifier: "PageCell")
-			cell.textLabel?.text = pageViewModel.page.title
+			cell.textLabel?.text = pageViewModel.title
 			cell.textLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
 			cell.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
 			return cell
