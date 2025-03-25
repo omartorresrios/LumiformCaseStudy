@@ -11,6 +11,16 @@ final class RootPageViewController: UIPageViewController {
 	private var pages: [PageViewController] = []
 	private let repository: GenericItemRepositoryProtocol
 
+	private let pageControl: UIPageControl = {
+		let pc = UIPageControl()
+		pc.translatesAutoresizingMaskIntoConstraints = false
+		pc.currentPageIndicatorTintColor = .black
+		pc.pageIndicatorTintColor = .gray
+		pc.backgroundStyle = .minimal
+		pc.isOpaque = true
+		return pc
+	}()
+
 	init(repository: GenericItemRepositoryProtocol) {
 		self.repository = repository
 		super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -30,6 +40,12 @@ final class RootPageViewController: UIPageViewController {
 
 	private func setupUI() {
 		view.backgroundColor = .white
+		
+		view.addSubview(pageControl)
+		NSLayoutConstraint.activate([
+			pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
+		])
 	}
 
 	private func fetchPages() {
@@ -44,6 +60,9 @@ final class RootPageViewController: UIPageViewController {
 						if let firstPage = self.pages.first {
 							self.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
 						}
+						
+						self.pageControl.numberOfPages = self.pages.count
+						self.pageControl.currentPage = 0
 					}
 				}
 			case .failure(let error):
@@ -97,6 +116,8 @@ extension RootPageViewController: UIPageViewControllerDelegate {
 							previousViewControllers: [UIViewController],
 							transitionCompleted completed: Bool) {
 		if completed, let currentVC = viewControllers?.first as? PageViewController {
+			let currentIndex = pages.firstIndex(of: currentVC) ?? 0
+			pageControl.currentPage = currentIndex
 			currentVC.viewModel.fetchItems()
 		}
 	}
