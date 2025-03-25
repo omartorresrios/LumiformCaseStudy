@@ -167,3 +167,9 @@ extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 		}
 	}
 }
+
+extension PageViewController: ImageQuestionCellDelegate {
+	func didTapImage(with viewModel: ImageQuestionViewModel) {
+		
+	}
+}

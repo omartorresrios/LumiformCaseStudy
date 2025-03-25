@@ -7,10 +7,16 @@
 
 import UIKit
 
+protocol ImageQuestionCellDelegate: AnyObject {
+	func didTapImage(with viewModel: ImageQuestionViewModel)
+}
+
 final class ImageQuestionCell: UITableViewCell {
 	private let titleLabel = UILabel()
 	private let questionImageView = UIImageView()
 	private let containerView = UIView()
+	weak var delegate: ImageQuestionCellDelegate?
+	private var viewModel: ImageQuestionViewModel?
 	
 	override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
 		super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -50,7 +56,6 @@ final class ImageQuestionCell: UITableViewCell {
 		
 		NSLayoutConstraint.activate([
 			containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-			containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
 			containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 			containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
 			
@@ -67,8 +72,29 @@ final class ImageQuestionCell: UITableViewCell {
 	}
 	
 	func configure(with viewModel: ImageQuestionViewModel) {
+		self.viewModel = viewModel
 		titleLabel.text = viewModel.question.title
+		containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
+											   constant: 16 + CGFloat(viewModel.nestingLevel * 16)).isActive = true
+		
+		if let url = URL(string: viewModel.question.src) {
+			let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+				guard let self = self, let data = data, error == nil, let image = UIImage(data: data) else {
+					print("Failed to download image: \(error?.localizedDescription ?? "Unknown error")")
+					return
+				}
+				
+				DispatchQueue.main.async {
+					self.questionImageView.image = image
+				}
+			}
+			task.resume()
+		}
 	}
 	
-	@objc private func imageTapped() { }
+	@objc private func imageTapped() {
+		if let viewModel = viewModel {
+			delegate?.didTapImage(with: viewModel)
+		}
+	}
 }
