@@ -63,6 +63,31 @@ final class PageViewModelTests: XCTestCase {
 		XCTAssertTrue(viewModels[0] is SectionViewModel)
 		XCTAssertTrue(viewModels[1] is TextQuestionViewModel)
 	}
+	
+	func testErrorFetch() {
+		let (sut, mockRepository) = makeSut()
+		var capturedStates: [PageViewModel.ViewState] = []
+		
+		sut.stateChanged = { state in
+			capturedStates.append(state)
+		}
+		
+		mockRepository.fetchItemClosure = { completion in
+			completion(.failure(.connectivity))
+		}
+		
+		sut.fetchItems()
+		
+		XCTAssertEqual(capturedStates.count, 2)
+		XCTAssertEqual(capturedStates[0], .loading)
+		
+		guard case .error(let error) = capturedStates[1] else {
+			XCTFail("Expected error state")
+			return
+		}
+		
+		XCTAssertTrue(error is NetworkError)
+	}
 
 	private func makeSut() -> (PageViewModel, MockItemRepository)  {
 		let mockRepository = MockItemRepository()
