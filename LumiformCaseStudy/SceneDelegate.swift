@@ -18,9 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let networkService = URLSessionService()
 		let itemMapper = GenericItemMapper()
 		let repository = GenericItemRepository(networkService: networkService, itemMapper: itemMapper)
-		let viewModel = PageViewModel(repository: repository)
-		let pageViewController = PageViewController(viewModel: viewModel)
-		let navigationController = UINavigationController(rootViewController: pageViewController)
+		let rootVC = RootPageViewController(repository: repository)
+		let navigationController = UINavigationController(rootViewController: rootVC)
 		window?.rootViewController = navigationController
 		window?.makeKeyAndVisible()
 	}

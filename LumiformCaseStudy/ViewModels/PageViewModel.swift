@@ -19,7 +19,7 @@ final class PageViewModel: GenericItemViewModel {
 		case error(Error)
 	}
 	
-	private let repository: GenericItemRepositoryProtocol
+	private let page: Page
 	var type: String { return "page" }
 	var stateChanged: ((ViewState) -> Void)?
 	
@@ -38,37 +38,24 @@ final class PageViewModel: GenericItemViewModel {
 		}
 	}
 	
-	private(set) var title: String = ""
+	private(set) var title: String
 	
-	init(repository: GenericItemRepositoryProtocol) {
-		self.repository = repository
+	init(page: Page) {
+		self.page = page
+		self.title = page.title
 	}
 	
 	func fetchItems() {
 		currentState = .loading
-		repository.fetchItem { [weak self] result in
-			guard let self = self else { return }
-			
-			switch result {
-			case .success(let item):
-				if let page = item.asPage {
-					self.title = page.title
-					let viewModels = self.transformToViewModels(page)
-					self.currentState = .loaded(viewModels)
-				}
-			case .failure(let error):
-				self.currentState = .error(error)
-			}
-		}
+		let viewModels = transformToViewModels(page)
+		currentState = .loaded(viewModels)
 	}
 	
 	private func transformToViewModels(_ page: Page) -> [GenericItemViewModel] {
 		var viewModels: [GenericItemViewModel] = []
 		
 		for item in page.items {
-			if let nestedPage = item.asPage {
-				viewModels.append(contentsOf: transformToViewModels(nestedPage))
-			} else if let section = item.asSection {
+			if let section = item.asSection {
 				viewModels.append(SectionViewModel(section: section, nestingLevel: 0))
 			} else if let textQuestion = item.asTextQuestion {
 				viewModels.append(TextQuestionViewModel(question: textQuestion))

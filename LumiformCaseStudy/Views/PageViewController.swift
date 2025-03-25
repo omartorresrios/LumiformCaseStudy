@@ -8,7 +8,7 @@
 import UIKit
 
 final class PageViewController: UIViewController {
-	private let viewModel: PageViewModel
+	let viewModel: PageViewModel
 	private let tableView = UITableView()
 	private let activityIndicator = UIActivityIndicatorView(style: .large)
 	
@@ -108,8 +108,6 @@ final class PageViewController: UIViewController {
 			
 			if let sectionViewModel = item as? SectionViewModel {
 				result.append(contentsOf: flattenItems(for: sectionViewModel))
-			} else if let pageViewModel = item as? PageViewModel {
-				result.append(contentsOf: pageViewModel.items)
 			}
 		}
 		
