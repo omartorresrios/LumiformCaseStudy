@@ -160,6 +160,7 @@ extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 		case let imageQuestionViewModel as ImageQuestionViewModel:
 			let cell = tableView.dequeueReusableCell(withIdentifier: "ImageQuestionCell", for: indexPath) as! ImageQuestionCell
 			cell.configure(with: imageQuestionViewModel)
+			cell.delegate = self
 			return cell
 			
 		default:
@@ -170,6 +171,7 @@ extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension PageViewController: ImageQuestionCellDelegate {
 	func didTapImage(with viewModel: ImageQuestionViewModel) {
-		
+		let detailVC = ImageDetailViewController(viewModel: viewModel)
+		navigationController?.pushViewController(detailVC, animated: true)
 	}
 }
