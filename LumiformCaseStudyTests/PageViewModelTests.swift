@@ -88,6 +88,19 @@ final class PageViewModelTests: XCTestCase {
 		
 		XCTAssertTrue(error is NetworkError)
 	}
+	
+	func testEmptyItemsList() {
+		let (sut, mockRepository) = makeSut()
+		let mockPage = Page(type: "page", title: "Empty Page", items: [])
+		
+		mockRepository.fetchItemClosure = { completion in
+			completion(.success(GenericItem(mockPage)))
+		}
+		
+		sut.fetchItems()
+		
+		XCTAssertTrue(sut.items.isEmpty)
+	}
 
 	private func makeSut() -> (PageViewModel, MockItemRepository)  {
 		let mockRepository = MockItemRepository()
