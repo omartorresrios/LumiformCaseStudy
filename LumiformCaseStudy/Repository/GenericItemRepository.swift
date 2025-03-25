@@ -18,7 +18,11 @@ enum NetworkError: Error {
 	case invalidResponse(statusCode: Int)
 }
 
-final class GenericItemRepository {
+protocol GenericItemRepositoryProtocol {
+	func fetchItem(completion: @escaping (FetchDataResult) -> Void)
+}
+
+final class GenericItemRepository: GenericItemRepositoryProtocol {
 	private let networkService: ServiceProtocol
 	private let itemMapper: GenericItemMapper
 	

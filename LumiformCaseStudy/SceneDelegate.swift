@@ -15,7 +15,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		guard let windowScene = (scene as? UIWindowScene) else { return }
 		window = UIWindow(frame: windowScene.coordinateSpace.bounds)
 		window?.windowScene = windowScene
-		let pageViewController = PageViewController()
+		let networkService = URLSessionService()
+		let itemMapper = GenericItemMapper()
+		let repository = GenericItemRepository(networkService: networkService, itemMapper: itemMapper)
+		let viewModel = PageViewModel(repository: repository)
+		let pageViewController = PageViewController(viewModel: viewModel)
 		let navigationController = UINavigationController(rootViewController: pageViewController)
 		window?.rootViewController = navigationController
 		window?.makeKeyAndVisible()

@@ -50,7 +50,7 @@ final class TextQuestionCell: UITableViewCell {
 		])
 	}
 	
-	func configure() {
-		titleLabel.text = "Question title"
+	func configure(with viewModel: TextQuestionViewModel) {
+		titleLabel.text = viewModel.question.title
 	}
 }
