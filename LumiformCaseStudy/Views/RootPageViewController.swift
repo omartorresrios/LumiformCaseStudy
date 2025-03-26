@@ -59,6 +59,7 @@ final class RootPageViewController: UIPageViewController {
 						self.pages = topLevelPages.map { PageViewController(viewModel: PageViewModel(page: $0)) }
 						if let firstPage = self.pages.first {
 							self.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
+							self.updateTitle(for: firstPage)
 						}
 						
 						self.pageControl.numberOfPages = self.pages.count
@@ -79,6 +80,10 @@ final class RootPageViewController: UIPageViewController {
 			}
 		}
 		return topLevelPages
+	}
+	
+	private func updateTitle(for pageVC: PageViewController) {
+		title = pageVC.viewModel.title
 	}
 }
 
@@ -119,6 +124,7 @@ extension RootPageViewController: UIPageViewControllerDelegate {
 			let currentIndex = pages.firstIndex(of: currentVC) ?? 0
 			pageControl.currentPage = currentIndex
 			currentVC.viewModel.fetchItems()
+			updateTitle(for: currentVC)
 		}
 	}
 }

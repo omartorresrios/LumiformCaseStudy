@@ -62,7 +62,6 @@ final class PageViewController: UIViewController {
 	}
 
 	private func setupUI() {
-		title = "Main Page"
 		view.backgroundColor = .white
 		
 		tableView.delegate = self
