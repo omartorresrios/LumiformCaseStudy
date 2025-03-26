@@ -37,7 +37,6 @@ final class SectionCell: UITableViewCell {
 		
 		NSLayoutConstraint.activate([
 			containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-			containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
 			containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 			containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
 			
@@ -50,6 +49,12 @@ final class SectionCell: UITableViewCell {
 	
 	func configure(with viewModel: SectionViewModel) {
 		titleLabel.text = viewModel.section.title
+		
+		let baseFontSize: CGFloat = 18
+		let fontSize = max(baseFontSize - CGFloat(viewModel.nestingLevel * 2), 14)
+		titleLabel.font = UIFont.systemFont(ofSize: fontSize, weight: .medium)
+		
+		containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
+											   constant: 16 + CGFloat(viewModel.nestingLevel * 16)).isActive = true
 	}
 }
-

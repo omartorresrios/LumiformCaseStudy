@@ -28,6 +28,8 @@
 		24FBD3B62D91D141006ABCDD /* TextQuestionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3B52D91D141006ABCDD /* TextQuestionViewModel.swift */; };
 		24FBD3B82D91D152006ABCDD /* ImageQuestionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3B72D91D152006ABCDD /* ImageQuestionViewModel.swift */; };
 		24FBD3BA2D921847006ABCDD /* PageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3B92D921847006ABCDD /* PageViewModelTests.swift */; };
+		24FBD3BC2D92EFD4006ABCDD /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3BB2D92EFD4006ABCDD /* ImageDetailViewController.swift */; };
+		24FBD3BE2D930043006ABCDD /* RootPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3BD2D930043006ABCDD /* RootPageViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +66,8 @@
 		24FBD3B52D91D141006ABCDD /* TextQuestionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextQuestionViewModel.swift; sourceTree = "<group>"; };
 		24FBD3B72D91D152006ABCDD /* ImageQuestionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageQuestionViewModel.swift; sourceTree = "<group>"; };
 		24FBD3B92D921847006ABCDD /* PageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewModelTests.swift; sourceTree = "<group>"; };
+		24FBD3BB2D92EFD4006ABCDD /* ImageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
+		24FBD3BD2D930043006ABCDD /* RootPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPageViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,7 +162,9 @@
 		24FBD3AD2D91C9F6006ABCDD /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				24FBD3BD2D930043006ABCDD /* RootPageViewController.swift */,
 				24FBD3A52D90912B006ABCDD /* PageViewController.swift */,
+				24FBD3BB2D92EFD4006ABCDD /* ImageDetailViewController.swift */,
 				24FBD3AE2D91CA07006ABCDD /* Cells */,
 			);
 			path = Views;
@@ -302,6 +308,7 @@
 				24FBD3B82D91D152006ABCDD /* ImageQuestionViewModel.swift in Sources */,
 				24FBD3A82D91C49F006ABCDD /* SectionCell.swift in Sources */,
 				2475C7592D8F248A00CAECF8 /* AppDelegate.swift in Sources */,
+				24FBD3BE2D930043006ABCDD /* RootPageViewController.swift in Sources */,
 				24FBD3A42D908CF6006ABCDD /* GenericItemMapper.swift in Sources */,
 				24FBD39C2D908C78006ABCDD /* ServiceProtocol.swift in Sources */,
 				24FBD3B22D91D096006ABCDD /* PageViewModel.swift in Sources */,
@@ -310,6 +317,7 @@
 				2475C75B2D8F248A00CAECF8 /* SceneDelegate.swift in Sources */,
 				24FBD3832D8F287D006ABCDD /* Models.swift in Sources */,
 				24FBD3B62D91D141006ABCDD /* TextQuestionViewModel.swift in Sources */,
+				24FBD3BC2D92EFD4006ABCDD /* ImageDetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

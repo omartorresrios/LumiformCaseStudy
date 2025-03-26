@@ -8,7 +8,7 @@
 import UIKit
 
 final class PageViewController: UIViewController {
-	private let viewModel: PageViewModel
+	let viewModel: PageViewModel
 	private let tableView = UITableView()
 	private let activityIndicator = UIActivityIndicatorView(style: .large)
 	
@@ -62,7 +62,6 @@ final class PageViewController: UIViewController {
 	}
 
 	private func setupUI() {
-		title = "Main Page"
 		view.backgroundColor = .white
 		
 		tableView.delegate = self
@@ -108,8 +107,6 @@ final class PageViewController: UIViewController {
 			
 			if let sectionViewModel = item as? SectionViewModel {
 				result.append(contentsOf: flattenItems(for: sectionViewModel))
-			} else if let pageViewModel = item as? PageViewModel {
-				result.append(contentsOf: pageViewModel.items)
 			}
 		}
 		
@@ -160,10 +157,18 @@ extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 		case let imageQuestionViewModel as ImageQuestionViewModel:
 			let cell = tableView.dequeueReusableCell(withIdentifier: "ImageQuestionCell", for: indexPath) as! ImageQuestionCell
 			cell.configure(with: imageQuestionViewModel)
+			cell.delegate = self
 			return cell
 			
 		default:
 			return UITableViewCell()
 		}
+	}
+}
+
+extension PageViewController: ImageQuestionCellDelegate {
+	func didTapImage(with viewModel: ImageQuestionViewModel) {
+		let detailVC = ImageDetailViewController(viewModel: viewModel)
+		navigationController?.pushViewController(detailVC, animated: true)
 	}
 }
