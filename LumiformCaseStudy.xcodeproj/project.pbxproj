@@ -31,6 +31,7 @@
 		24FBD3BC2D92EFD4006ABCDD /* ImageDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3BB2D92EFD4006ABCDD /* ImageDetailViewController.swift */; };
 		24FBD3BE2D930043006ABCDD /* RootPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3BD2D930043006ABCDD /* RootPageViewController.swift */; };
 		24FBD3C12D945572006ABCDD /* PageCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3C02D945572006ABCDD /* PageCoordinator.swift */; };
+		24FBD3C42D946497006ABCDD /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3C32D946497006ABCDD /* ImageCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		24FBD3BB2D92EFD4006ABCDD /* ImageDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageDetailViewController.swift; sourceTree = "<group>"; };
 		24FBD3BD2D930043006ABCDD /* RootPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPageViewController.swift; sourceTree = "<group>"; };
 		24FBD3C02D945572006ABCDD /* PageCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageCoordinator.swift; sourceTree = "<group>"; };
+		24FBD3C32D946497006ABCDD /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 		2475C7572D8F248A00CAECF8 /* LumiformCaseStudy */ = {
 			isa = PBXGroup;
 			children = (
+				24FBD3C22D946486006ABCDD /* Utilities */,
 				24FBD3BF2D945568006ABCDD /* PageCoordinator */,
 				24FBD3B02D91D08B006ABCDD /* ViewModels */,
 				24FBD3A22D908CEE006ABCDD /* Mapper */,
@@ -208,6 +211,14 @@
 				24FBD3C02D945572006ABCDD /* PageCoordinator.swift */,
 			);
 			path = PageCoordinator;
+			sourceTree = "<group>";
+		};
+		24FBD3C22D946486006ABCDD /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				24FBD3C32D946497006ABCDD /* ImageCache.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -313,6 +324,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24FBD3AC2D91C5DC006ABCDD /* ImageQuestionCell.swift in Sources */,
+				24FBD3C42D946497006ABCDD /* ImageCache.swift in Sources */,
 				24FBD39E2D908C94006ABCDD /* URLSessionService.swift in Sources */,
 				24FBD3B42D91D12D006ABCDD /* SectionViewModel.swift in Sources */,
 				24FBD3A12D908CD7006ABCDD /* GenericItemRepository.swift in Sources */,

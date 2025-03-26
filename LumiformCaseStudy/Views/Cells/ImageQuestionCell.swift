@@ -78,14 +78,27 @@ final class ImageQuestionCell: UITableViewCell {
 											   constant: 16 + CGFloat(viewModel.nestingLevel * 16)).isActive = true
 		
 		if let url = URL(string: viewModel.question.src) {
+			if let cachedImage = ImageCache.cachedImage(forKey: viewModel.question.src) {
+				let resizedImage = ImageCache.resizedImage(cachedImage, 
+														   toSize: CGSize(width: 100, height: 100))
+				questionImageView.image = resizedImage
+				return
+			}
+			
 			let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-				guard let self = self, let data = data, error == nil, let image = UIImage(data: data) else {
+				guard let self = self, 
+						let data = data, error == nil,
+						let image = UIImage(data: data) else {
 					print("Failed to download image: \(error?.localizedDescription ?? "Unknown error")")
 					return
 				}
 				
+				ImageCache.cacheImage(image, forKey: viewModel.question.src)
+				
+				let resizedImage = ImageCache.resizedImage(image, toSize: CGSize(width: 100, height: 100))
+				
 				DispatchQueue.main.async {
-					self.questionImageView.image = image
+					self.questionImageView.image = resizedImage
 				}
 			}
 			task.resume()
