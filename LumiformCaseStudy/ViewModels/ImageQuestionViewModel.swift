@@ -6,13 +6,12 @@
 //
 
 import Foundation
-import UIKit
 
 final class ImageQuestionViewModel: GenericItemViewModel {
 	private let imageService: ImageService
 	let question: ImageQuestion
 	let nestingLevel: Int
-	var onImageLoaded: ((UIImage) -> Void)?
+	var onImageLoaded: ((Data) -> Void)?
 	var type: String { return "image" }
 	
 	init(imageService: ImageService, question: ImageQuestion, nestingLevel: Int = 0) {
@@ -24,15 +23,16 @@ final class ImageQuestionViewModel: GenericItemViewModel {
 	func loadImage(fullSize: Bool) {
 		if let url = URL(string: question.src) {
 			imageService.fetchImage(from: url) { [weak self] result in
-				if case .success(let image) = result {
-					var resizedImage = UIImage()
+				if case .success(let imageData) = result {
+					let processedData: Data
 					if fullSize {
-						resizedImage = image
+						processedData = imageData
 					} else {
-						resizedImage = ImageCache.resizedImage(image, toSize: CGSize(width: 100, height: 100)) ?? UIImage()
+						processedData = ImageCache.resizedImageData(imageData,
+																	toSize: CGSize(width: 100, height: 100)) ?? imageData
 					}
 					DispatchQueue.main.async {
-						self?.onImageLoaded?(resizedImage)
+						self?.onImageLoaded?(processedData)
 					}
 				}
 			}

@@ -74,9 +74,10 @@ final class ImageDetailViewController: UIViewController {
 	}
 	
 	private func loadImage() {
-		viewModel.onImageLoaded = { [weak self] image in
+		viewModel.onImageLoaded = { [weak self] data in
 			DispatchQueue.main.async {
-				self?.updateImage(image)
+				guard let normalImage = UIImage(data: data) else { return }
+				self?.updateImage(normalImage)
 			}
 		}
 		viewModel.loadImage(fullSize: true)

@@ -8,20 +8,22 @@
 import UIKit
 
 final class ImageCache {
-	static let shared = NSCache<NSString, UIImage>()
+	static let shared = NSCache<NSString, NSData>()
 	
-	static func cacheImage(_ image: UIImage, forKey key: String) {
-		shared.setObject(image, forKey: key as NSString)
+	static func cacheData(_ image: Data, forKey key: String) {
+		shared.setObject(image as NSData, forKey: key as NSString)
 	}
 	
-	static func cachedImage(forKey key: String) -> UIImage? {
-		return shared.object(forKey: key as NSString)
+	static func cachedData(forKey key: String) -> Data? {
+		return shared.object(forKey: key as NSString) as Data?
 	}
 	
-	static func resizedImage(_ image: UIImage, toSize size: CGSize) -> UIImage? {
+	static func resizedImageData(_ imageData: Data, toSize size: CGSize) -> Data? {
+		guard let image = UIImage(data: imageData) else { return nil }
 		let renderer = UIGraphicsImageRenderer(size: size)
-		return renderer.image { _ in
+		let resizedImage = renderer.image { _ in
 			image.draw(in: CGRect(origin: .zero, size: size))
 		}
+		return resizedImage.jpegData(compressionQuality: 0.8)
 	}
 }

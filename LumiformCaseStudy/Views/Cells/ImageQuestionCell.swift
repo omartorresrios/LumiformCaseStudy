@@ -66,8 +66,9 @@ final class ImageQuestionCell: UITableViewCell {
 		containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
 											   constant: 16 + CGFloat(viewModel.nestingLevel * 16)).isActive = true
 		
-		viewModel.onImageLoaded = { [weak self] image in
-			self?.questionImageView.image = image
+		viewModel.onImageLoaded = { [weak self] data in
+			let smallImage = UIImage(data: data)
+			self?.questionImageView.image = smallImage
 		}
 		viewModel.loadImage(fullSize: false)
 	}
