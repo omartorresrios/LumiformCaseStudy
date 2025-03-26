@@ -24,7 +24,9 @@ final class SectionViewModel: GenericItemViewModel {
 			} else if let textQuestion = item.asTextQuestion {
 				items.append(TextQuestionViewModel(question: textQuestion, nestingLevel: nestingLevel + 1))
 			} else if let imageQuestion = item.asImageQuestion {
-				items.append(ImageQuestionViewModel(question: imageQuestion, nestingLevel: nestingLevel + 1))
+				items.append(ImageQuestionViewModel(imageService: NetworkImageService(),
+													question: imageQuestion,
+													nestingLevel: nestingLevel + 1))
 			}
 		}
 	}

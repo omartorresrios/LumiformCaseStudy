@@ -60,7 +60,8 @@ final class PageViewModel: GenericItemViewModel {
 			} else if let textQuestion = item.asTextQuestion {
 				viewModels.append(TextQuestionViewModel(question: textQuestion))
 			} else if let imageQuestion = item.asImageQuestion {
-				viewModels.append(ImageQuestionViewModel(question: imageQuestion))
+				viewModels.append(ImageQuestionViewModel(imageService: NetworkImageService(),
+														 question: imageQuestion))
 			}
 		}
 		
