@@ -10,7 +10,8 @@ import UIKit
 final class RootPageViewController: UIPageViewController {
 	private var pages: [PageViewController] = []
 	private let repository: GenericItemRepositoryProtocol
-
+	private var coordinator: PageCoordinatorProtocol
+	
 	private let pageControl: UIPageControl = {
 		let pc = UIPageControl()
 		pc.translatesAutoresizingMaskIntoConstraints = false
@@ -21,8 +22,9 @@ final class RootPageViewController: UIPageViewController {
 		return pc
 	}()
 
-	init(repository: GenericItemRepositoryProtocol) {
+	init(repository: GenericItemRepositoryProtocol, coordinator: PageCoordinatorProtocol) {
 		self.repository = repository
+		self.coordinator = coordinator
 		super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
 	}
 
@@ -53,12 +55,15 @@ final class RootPageViewController: UIPageViewController {
 			guard let self = self else { return }
 			switch result {
 			case .success(let item):
-				DispatchQueue.main.async {
+				DispatchQueue.main.async { [weak self] in
+					guard let self = self else { return }
 					if let rootPage = item.asPage {
 						let topLevelPages = self.extractTopLevelPages(from: rootPage)
-						self.pages = topLevelPages.map { PageViewController(viewModel: PageViewModel(page: $0)) }
+						self.pages = topLevelPages.map { PageViewController(viewModel: PageViewModel(page: $0),
+																			coordinator: self.coordinator)}
 						if let firstPage = self.pages.first {
 							self.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
+							self.coordinator.didSwitchToPage(firstPage)
 							self.updateTitle(for: firstPage)
 						}
 						
@@ -88,7 +93,7 @@ final class RootPageViewController: UIPageViewController {
 }
 
 extension RootPageViewController: UIPageViewControllerDataSource {
-	func pageViewController(_ pageViewController: UIPageViewController, 
+	func pageViewController(_ pageViewController: UIPageViewController,
 							viewControllerBefore viewController: UIViewController) -> UIViewController? {
 		guard let currentPage = viewController as? PageViewController,
 			  let currentIndex = pages.firstIndex(of: currentPage),
@@ -96,7 +101,7 @@ extension RootPageViewController: UIPageViewControllerDataSource {
 		return pages[currentIndex - 1]
 	}
 
-	func pageViewController(_ pageViewController: UIPageViewController, 
+	func pageViewController(_ pageViewController: UIPageViewController,
 							viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		guard let currentPage = viewController as? PageViewController,
 			  let currentIndex = pages.firstIndex(of: currentPage),
@@ -116,14 +121,14 @@ extension RootPageViewController: UIPageViewControllerDataSource {
 }
 
 extension RootPageViewController: UIPageViewControllerDelegate {
-	func pageViewController(_ pageViewController: UIPageViewController, 
+	func pageViewController(_ pageViewController: UIPageViewController,
 							didFinishAnimating finished: Bool,
 							previousViewControllers: [UIViewController],
 							transitionCompleted completed: Bool) {
 		if completed, let currentVC = viewControllers?.first as? PageViewController {
 			let currentIndex = pages.firstIndex(of: currentVC) ?? 0
 			pageControl.currentPage = currentIndex
-			currentVC.viewModel.fetchItems()
+			coordinator.didSwitchToPage(currentVC)
 			updateTitle(for: currentVC)
 		}
 	}
