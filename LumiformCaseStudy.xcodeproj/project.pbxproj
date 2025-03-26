@@ -113,14 +113,13 @@
 		2475C7572D8F248A00CAECF8 /* LumiformCaseStudy */ = {
 			isa = PBXGroup;
 			children = (
-				24FBD3C22D946486006ABCDD /* Utilities */,
-				24FBD3BF2D945568006ABCDD /* PageCoordinator */,
+				24FBD3AD2D91C9F6006ABCDD /* Views */,
 				24FBD3B02D91D08B006ABCDD /* ViewModels */,
-				24FBD3A22D908CEE006ABCDD /* Mapper */,
 				24FBD39F2D908CB8006ABCDD /* Repository */,
 				24FBD39A2D908C6C006ABCDD /* Networking */,
-				24FBD3AD2D91C9F6006ABCDD /* Views */,
+				24FBD3BF2D945568006ABCDD /* PageCoordinator */,
 				24FBD3AF2D91CAB1006ABCDD /* Models */,
+				24FBD3C22D946486006ABCDD /* Utilities */,
 				2475C7582D8F248A00CAECF8 /* AppDelegate.swift */,
 				2475C75A2D8F248A00CAECF8 /* SceneDelegate.swift */,
 				2475C7612D8F248B00CAECF8 /* Assets.xcassets */,
@@ -155,14 +154,6 @@
 				24FBD3A02D908CD7006ABCDD /* GenericItemRepository.swift */,
 			);
 			path = Repository;
-			sourceTree = "<group>";
-		};
-		24FBD3A22D908CEE006ABCDD /* Mapper */ = {
-			isa = PBXGroup;
-			children = (
-				24FBD3A32D908CF6006ABCDD /* GenericItemMapper.swift */,
-			);
-			path = Mapper;
 			sourceTree = "<group>";
 		};
 		24FBD3AD2D91C9F6006ABCDD /* Views */ = {
@@ -216,6 +207,7 @@
 		24FBD3C22D946486006ABCDD /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				24FBD3A32D908CF6006ABCDD /* GenericItemMapper.swift */,
 				24FBD3C32D946497006ABCDD /* ImageCache.swift */,
 			);
 			path = Utilities;

@@ -12,7 +12,6 @@ protocol ImageQuestionCellDelegate: AnyObject {
 }
 
 final class ImageQuestionCell: UITableViewCell {
-	private let titleLabel = UILabel()
 	private let questionImageView = UIImageView()
 	private let containerView = UIView()
 	weak var delegate: ImageQuestionCellDelegate?
@@ -35,9 +34,6 @@ final class ImageQuestionCell: UITableViewCell {
 		containerView.layer.borderWidth = 1
 		containerView.layer.borderColor = UIColor(white: 0.9, alpha: 1.0).cgColor
 		
-		titleLabel.numberOfLines = 0
-		titleLabel.font = UIFont.systemFont(ofSize: 16)
-		
 		questionImageView.contentMode = .scaleAspectFit
 		questionImageView.layer.cornerRadius = 4
 		questionImageView.clipsToBounds = true
@@ -47,11 +43,9 @@ final class ImageQuestionCell: UITableViewCell {
 		questionImageView.addGestureRecognizer(tapGesture)
 		
 		contentView.addSubview(containerView)
-		containerView.addSubview(titleLabel)
 		containerView.addSubview(questionImageView)
 		
 		containerView.translatesAutoresizingMaskIntoConstraints = false
-		titleLabel.translatesAutoresizingMaskIntoConstraints = false
 		questionImageView.translatesAutoresizingMaskIntoConstraints = false
 		
 		NSLayoutConstraint.activate([
@@ -59,11 +53,7 @@ final class ImageQuestionCell: UITableViewCell {
 			containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
 			containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
 			
-			titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
-			titleLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
-			titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
-			
-			questionImageView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+			questionImageView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 10),
 			questionImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
 			questionImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
 			questionImageView.heightAnchor.constraint(equalToConstant: 150),
@@ -73,7 +63,6 @@ final class ImageQuestionCell: UITableViewCell {
 	
 	func configure(with viewModel: ImageQuestionViewModel) {
 		self.viewModel = viewModel
-		titleLabel.text = viewModel.question.title
 		containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
 											   constant: 16 + CGFloat(viewModel.nestingLevel * 16)).isActive = true
 		
