@@ -8,11 +8,7 @@
 import Foundation
 
 final class URLSessionService: ServiceProtocol {
-	private let urlString: String
-		
-	init(urlString: String = "https://run.mocky.io/v3/d403fba7-413f-40d8-bec2-afe6ef4e201e") {
-		self.urlString = urlString
-	}
+	private let urlString = "https://run.mocky.io/v3/1800b96f-c579-49e5-b0b8-49856a36ce39"
 	
 	func fetchData(completion: @escaping (ServiceResult) -> Void) {
 		guard let url = URL(string: urlString) else { return }

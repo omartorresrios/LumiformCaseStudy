@@ -11,6 +11,7 @@ final class PageViewController: UIViewController {
 	let viewModel: PageViewModel
 	private let tableView = UITableView()
 	private let activityIndicator = UIActivityIndicatorView(style: .large)
+	private let coordinator: PageCoordinatorProtocol
 	
 	private let errorLabel: UILabel = {
 		let label = UILabel()
@@ -20,8 +21,9 @@ final class PageViewController: UIViewController {
 		return label
 	}()
 	
-	init(viewModel: PageViewModel) {
+	init(viewModel: PageViewModel, coordinator: PageCoordinatorProtocol) {
 		self.viewModel = viewModel
+		self.coordinator = coordinator
 		super.init(nibName: nil, bundle: nil)
 	}
 	
@@ -168,7 +170,6 @@ extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension PageViewController: ImageQuestionCellDelegate {
 	func didTapImage(with viewModel: ImageQuestionViewModel) {
-		let detailVC = ImageDetailViewController(viewModel: viewModel)
-		navigationController?.pushViewController(detailVC, animated: true)
+		coordinator.showImageDetailsViewController(with: viewModel)
 	}
 }
