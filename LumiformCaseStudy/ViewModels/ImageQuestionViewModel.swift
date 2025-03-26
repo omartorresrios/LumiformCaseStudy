@@ -21,13 +21,17 @@ final class ImageQuestionViewModel: GenericItemViewModel {
 		self.nestingLevel = nestingLevel
 	}
 	
-	func loadImage() {
+	func loadImage(fullSize: Bool) {
 		if let url = URL(string: question.src) {
 			imageService.fetchImage(from: url) { [weak self] result in
 				if case .success(let image) = result {
-					let resizedImage = ImageCache.resizedImage(image, toSize: CGSize(width: 100, height: 100))
+					var resizedImage = UIImage()
+					if fullSize {
+						resizedImage = image
+					} else {
+						resizedImage = ImageCache.resizedImage(image, toSize: CGSize(width: 100, height: 100)) ?? UIImage()
+					}
 					DispatchQueue.main.async {
-						guard let resizedImage = resizedImage else { return }
 						self?.onImageLoaded?(resizedImage)
 					}
 				}

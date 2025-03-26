@@ -69,7 +69,7 @@ final class ImageQuestionCell: UITableViewCell {
 		viewModel.onImageLoaded = { [weak self] image in
 			self?.questionImageView.image = image
 		}
-		viewModel.loadImage()
+		viewModel.loadImage(fullSize: false)
 	}
 	
 	@objc private func imageTapped() {

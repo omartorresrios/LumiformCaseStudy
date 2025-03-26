@@ -74,27 +74,12 @@ final class ImageDetailViewController: UIViewController {
 	}
 	
 	private func loadImage() {
-		if let cachedImage = ImageCache.cachedImage(forKey: viewModel.question.src) {
-			updateImage(cachedImage)
-			return
-		}
-		if let url = URL(string: viewModel.question.src) {
-			let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-				guard let self = self,
-					  let data = data,
-					  error == nil,
-					  let image = UIImage(data: data) else {
-					print("Failed to download image: \(error?.localizedDescription ?? "Unknown error")")
-					return
-				}
-				
-				ImageCache.cacheImage(image, forKey: self.viewModel.question.src)
-				DispatchQueue.main.async {
-					self.updateImage(image)
-				}
+		viewModel.onImageLoaded = { [weak self] image in
+			DispatchQueue.main.async {
+				self?.updateImage(image)
 			}
-			task.resume()
 		}
+		viewModel.loadImage(fullSize: true)
 	}
 	
 	private func updateImage(_ image: UIImage) {
