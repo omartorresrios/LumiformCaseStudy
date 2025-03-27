@@ -11,6 +11,7 @@ final class RootPageViewController: UIPageViewController {
 	private var pages: [PageViewController] = []
 	private let repository: GenericItemRepositoryProtocol
 	private var coordinator: PageCoordinatorProtocol
+	private let serviceFactory: ServiceFactory
 	
 	private let pageControl: UIPageControl = {
 		let pc = UIPageControl()
@@ -30,9 +31,12 @@ final class RootPageViewController: UIPageViewController {
 		return label
 	}()
 
-	init(repository: GenericItemRepositoryProtocol, coordinator: PageCoordinatorProtocol) {
+	init(repository: GenericItemRepositoryProtocol, 
+		 coordinator: PageCoordinatorProtocol,
+		 serviceFactory: ServiceFactory = DependencyFactory()) {
 		self.repository = repository
 		self.coordinator = coordinator
+		self.serviceFactory = serviceFactory
 		super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
 	}
 
@@ -93,8 +97,8 @@ final class RootPageViewController: UIPageViewController {
 	
 	private func createPageControllers(from pages: [Page],
 									   coordinator: PageCoordinatorProtocol) -> [PageViewController] {
-		DependencyContainer.shared.createPageControllers(from: pages,
-														 coordinator: coordinator)
+		serviceFactory.createPageControllers(from: pages,
+											 coordinator: coordinator)
 	}
 	
 	private func updateTitle(for pageVC: PageViewController) {

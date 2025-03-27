@@ -5,16 +5,20 @@
 //  Created by Omar Torres on 3/27/25.
 //
 
-final class DependencyContainer {
-	static let shared = DependencyContainer()
+protocol ServiceFactory {
+	func createNetworkImageService() -> ImageService
+	func createPageControllers(from pages: [Page], coordinator: PageCoordinatorProtocol) -> [PageViewController]
+}
+
+final class DependencyFactory: ServiceFactory {
 	
-	private init() {}
-	
-	lazy var networkImageService: NetworkImageService = {
+	func createNetworkImageService() -> ImageService {
 		return NetworkImageService()
-	}()
+	}
 	
 	func createPageControllers(from pages: [Page], coordinator: PageCoordinatorProtocol) -> [PageViewController] {
-		pages.map { PageViewController(viewModel: PageViewModel(page: $0), coordinator: coordinator) }
+		pages.map { PageViewController(viewModel: PageViewModel(page: $0,
+																imageService: self.createNetworkImageService()),
+									   coordinator: coordinator) }
 	}
 }

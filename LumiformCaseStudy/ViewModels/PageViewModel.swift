@@ -19,7 +19,7 @@ final class PageViewModel: GenericItemViewModel {
 	}
 	
 	private let page: Page
-	private let networkImageService: NetworkImageService
+	private let imageService: ImageService
 	var type: String { return "page" }
 	var stateChanged: ((ViewState) -> Void)?
 	
@@ -44,10 +44,9 @@ final class PageViewModel: GenericItemViewModel {
 		_title
 	}
 	
-	init(page: Page, 
-		 networkImageService: NetworkImageService = DependencyContainer.shared.networkImageService) {
+	init(page: Page, imageService: ImageService) {
 		self.page = page
-		self.networkImageService = networkImageService
+		self.imageService = imageService
 		self._title = page.title
 	}
 	
@@ -66,7 +65,7 @@ final class PageViewModel: GenericItemViewModel {
 			} else if let textQuestion = item.asTextQuestion {
 				viewModels.append(TextQuestionViewModel(question: textQuestion))
 			} else if let imageQuestion = item.asImageQuestion {
-				viewModels.append(ImageQuestionViewModel(imageService: networkImageService,
+				viewModels.append(ImageQuestionViewModel(imageService: imageService,
 														 question: imageQuestion))
 			}
 		}
