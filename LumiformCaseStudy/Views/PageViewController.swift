@@ -16,14 +16,6 @@ final class PageViewController: UIViewController {
 	private let textQuestionCell = "TextQuestionCell"
 	private let imageQuestionCell = "ImageQuestionCell"
 	
-	private let errorLabel: UILabel = {
-		let label = UILabel()
-		label.textAlignment = .center
-		label.numberOfLines = 0
-		label.textColor = .red
-		return label
-	}()
-	
 	init(viewModel: PageViewModel, coordinator: PageCoordinatorProtocol) {
 		self.viewModel = viewModel
 		self.coordinator = coordinator
@@ -47,14 +39,11 @@ final class PageViewController: UIViewController {
 			switch state {
 			case .idle:
 				self.activityIndicator.stopAnimating()
-				self.errorLabel.isHidden = true
 			case .loading:
 				self.activityIndicator.startAnimating()
-				self.errorLabel.isHidden = true
 			case .loaded:
 				DispatchQueue.main.async {
 					self.activityIndicator.stopAnimating()
-					self.errorLabel.isHidden = true
 					self.tableView.reloadData()
 				}
 			}
@@ -81,9 +70,6 @@ final class PageViewController: UIViewController {
 		view.addSubview(activityIndicator)
 		activityIndicator.translatesAutoresizingMaskIntoConstraints = false
 		
-		view.addSubview(errorLabel)
-		errorLabel.translatesAutoresizingMaskIntoConstraints = false
-		
 		NSLayoutConstraint.activate([
 			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -91,12 +77,7 @@ final class PageViewController: UIViewController {
 			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 			
 			activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-			
-			errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-			errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-			errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+			activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
 		])
 	}
 }
