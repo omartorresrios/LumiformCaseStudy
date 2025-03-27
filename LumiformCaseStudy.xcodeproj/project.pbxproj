@@ -35,6 +35,7 @@
 		24FBD3C72D94705B006ABCDD /* NetworkImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3C62D94705B006ABCDD /* NetworkImageService.swift */; };
 		24FBD3C92D9594EB006ABCDD /* DependencyContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3C82D9594EB006ABCDD /* DependencyContainer.swift */; };
 		24FBD3CC2D95ACF7006ABCDD /* RootPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3CB2D95ACF7006ABCDD /* RootPageViewModel.swift */; };
+		24FBD3CE2D95BA97006ABCDD /* RootPageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3CD2D95BA97006ABCDD /* RootPageViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,6 +79,7 @@
 		24FBD3C62D94705B006ABCDD /* NetworkImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkImageService.swift; sourceTree = "<group>"; };
 		24FBD3C82D9594EB006ABCDD /* DependencyContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DependencyContainer.swift; sourceTree = "<group>"; };
 		24FBD3CB2D95ACF7006ABCDD /* RootPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPageViewModel.swift; sourceTree = "<group>"; };
+		24FBD3CD2D95BA97006ABCDD /* RootPageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPageViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 			children = (
 				24FBD38E2D8F3301006ABCDD /* ModelTests.swift */,
 				24FBD3B92D921847006ABCDD /* PageViewModelTests.swift */,
+				24FBD3CD2D95BA97006ABCDD /* RootPageViewModelTests.swift */,
 			);
 			path = LumiformCaseStudyTests;
 			sourceTree = "<group>";
@@ -370,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24FBD38F2D8F3301006ABCDD /* ModelTests.swift in Sources */,
+				24FBD3CE2D95BA97006ABCDD /* RootPageViewModelTests.swift in Sources */,
 				24FBD3BA2D921847006ABCDD /* PageViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
