@@ -16,7 +16,13 @@ final class PageViewModelTests: XCTestCase {
 	}
 	
 	func testTitleReturnsPageTitle() {
+		let sut = makeSut()
 		XCTAssertEqual(sut.title, "Main page")
+	}
+	
+	func testItemsIsInitiallyEmpty() {
+		let sut = makeSut()
+		XCTAssertTrue(sut.items.isEmpty)
 	}
 	
 	private func makeSut() -> PageViewModel  {
