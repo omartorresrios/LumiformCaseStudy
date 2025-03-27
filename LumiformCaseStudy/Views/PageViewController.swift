@@ -12,6 +12,9 @@ final class PageViewController: UIViewController {
 	private let tableView = UITableView()
 	private let activityIndicator = UIActivityIndicatorView(style: .large)
 	private let coordinator: PageCoordinatorProtocol
+	private let sectionCell = "SectionCell"
+	private let textQuestionCell = "TextQuestionCell"
+	private let imageQuestionCell = "ImageQuestionCell"
 	
 	private let errorLabel: UILabel = {
 		let label = UILabel()
@@ -72,9 +75,9 @@ final class PageViewController: UIViewController {
 		tableView.estimatedRowHeight = 100
 		tableView.rowHeight = UITableView.automaticDimension
 		
-		tableView.register(SectionCell.self, forCellReuseIdentifier: "SectionCell")
-		tableView.register(TextQuestionCell.self, forCellReuseIdentifier: "TextQuestionCell")
-		tableView.register(ImageQuestionCell.self, forCellReuseIdentifier: "ImageQuestionCell")
+		tableView.register(SectionCell.self, forCellReuseIdentifier: sectionCell)
+		tableView.register(TextQuestionCell.self, forCellReuseIdentifier: textQuestionCell)
+		tableView.register(ImageQuestionCell.self, forCellReuseIdentifier: imageQuestionCell)
 		
 		view.addSubview(tableView)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -100,64 +103,38 @@ final class PageViewController: UIViewController {
 			errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
 		])
 	}
-	
-	private func flattenedItems() -> [GenericItemViewModel] {
-		var result: [GenericItemViewModel] = []
-		
-		for item in viewModel.items {
-			result.append(item)
-			
-			if let sectionViewModel = item as? SectionViewModel {
-				result.append(contentsOf: flattenItems(for: sectionViewModel))
-			}
-		}
-		
-		return result
-	}
-	
-	private func flattenItems(for sectionViewModel: SectionViewModel) -> [GenericItemViewModel] {
-		var result: [GenericItemViewModel] = []
-		
-		for item in sectionViewModel.items {
-			result.append(item)
-			
-			if let nestedSection = item as? SectionViewModel {
-				result.append(contentsOf: flattenItems(for: nestedSection))
-			}
-		}
-		
-		return result
-	}
 }
 
 extension PageViewController: UITableViewDelegate, UITableViewDataSource {
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return flattenedItems().count
+		return viewModel.flattenedItems().count
 	}
 	
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let item = flattenedItems()[indexPath.row]
+		let item = viewModel.flattenedItems()[indexPath.row]
 		
 		switch item {
-		case let pageViewModel as PageViewModel:
-			let cell = UITableViewCell(style: .default, reuseIdentifier: "PageCell")
-			cell.textLabel?.text = pageViewModel.title
-			cell.textLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
-			cell.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
-			return cell
-			
 		case let sectionViewModel as SectionViewModel:
-			let cell = tableView.dequeueReusableCell(withIdentifier: "SectionCell", for: indexPath) as! SectionCell
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: sectionCell,
+														   for: indexPath) as? SectionCell else {
+				return UITableViewCell()
+			}
 			cell.configure(with: sectionViewModel)
 			return cell
 			
 		case let textQuestionViewModel as TextQuestionViewModel:
-			let cell = tableView.dequeueReusableCell(withIdentifier: "TextQuestionCell", for: indexPath) as! TextQuestionCell
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: textQuestionCell,
+														   for: indexPath) as? TextQuestionCell else {
+				return UITableViewCell()
+			}
 			cell.configure(with: textQuestionViewModel)
 			return cell
 			
 		case let imageQuestionViewModel as ImageQuestionViewModel:
-			let cell = tableView.dequeueReusableCell(withIdentifier: "ImageQuestionCell", for: indexPath) as! ImageQuestionCell
+			guard let cell = tableView.dequeueReusableCell(withIdentifier: imageQuestionCell,
+														   for: indexPath) as? ImageQuestionCell else {
+				return UITableViewCell()
+			}
 			cell.configure(with: imageQuestionViewModel)
 			cell.delegate = self
 			return cell

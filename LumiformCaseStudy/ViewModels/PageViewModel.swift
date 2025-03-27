@@ -74,6 +74,34 @@ final class PageViewModel: GenericItemViewModel {
 		
 		return viewModels
 	}
+	
+	func flattenedItems() -> [GenericItemViewModel] {
+		var result: [GenericItemViewModel] = []
+		
+		for item in items {
+			result.append(item)
+			
+			if let sectionViewModel = item as? SectionViewModel {
+				result.append(contentsOf: flattenItems(for: sectionViewModel))
+			}
+		}
+		
+		return result
+	}
+	
+	private func flattenItems(for sectionViewModel: SectionViewModel) -> [GenericItemViewModel] {
+		var result: [GenericItemViewModel] = []
+		
+		for item in sectionViewModel.items {
+			result.append(item)
+			
+			if let nestedSection = item as? SectionViewModel {
+				result.append(contentsOf: flattenItems(for: nestedSection))
+			}
+		}
+		
+		return result
+	}
 }
 
 extension PageViewModel.ViewState: Equatable {
