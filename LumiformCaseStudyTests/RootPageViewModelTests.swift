@@ -11,7 +11,7 @@ import XCTest
 final class RootPageViewModelTests: XCTestCase {
 	
 	func testInitialStateIsIdle() {
-		let sut = makeSut()
+		let (sut, _) = makeSut()
 		var initialState: RootPageViewModel.ViewState?
 		sut.stateDidChange = { state in
 			initialState = state
@@ -19,10 +19,23 @@ final class RootPageViewModelTests: XCTestCase {
 		XCTAssertNil(initialState, "No state change should occur on init")
 	}
 	
-	private func makeSut() -> RootPageViewModel  {
+	func testFetchTopLevelPagesTransitionsToLoading() {
+		let (sut, mockRepository) = makeSut()
+		var states: [RootPageViewModel.ViewState] = []
+		sut.stateDidChange = { state in
+			states.append(state)
+		}
+		mockRepository.fetchPagesResult = .success([])
+		
+		sut.fetchTopLevelPages()
+		
+		XCTAssertEqual(states.first, .loading)
+	}
+	
+	private func makeSut() -> (RootPageViewModel, MockRepository) {
 		let repository = MockRepository()
 		let viewModel = RootPageViewModel(repository: repository)
-		return viewModel
+		return (viewModel, repository)
 	}
 	
 	final class MockRepository: GenericItemRepositoryProtocol {

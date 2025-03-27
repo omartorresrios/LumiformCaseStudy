@@ -38,3 +38,18 @@ final class RootPageViewModel {
 		}
 	}
 }
+
+extension RootPageViewModel.ViewState: Equatable {
+	static func == (lhs: RootPageViewModel.ViewState, rhs: RootPageViewModel.ViewState) -> Bool {
+		switch (lhs, rhs) {
+		case (.idle, .idle), (.loading, .loading):
+			return true
+		case (.loaded(let lhsItems), .loaded(let rhsItems)):
+			return lhsItems.map { $0.type } == rhsItems.map { $0.type }
+		case (.error(let lhsError), .error(let rhsError)):
+			return lhsError.localizedDescription == rhsError.localizedDescription
+		default:
+			return false
+		}
+	}
+}
