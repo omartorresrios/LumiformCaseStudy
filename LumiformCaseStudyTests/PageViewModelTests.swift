@@ -50,6 +50,18 @@ final class PageViewModelTests: XCTestCase {
 		XCTAssertTrue(sut.items.isEmpty)
 	}
 	
+	func testTransformToViewModelsUsesImageService() {
+		let imageQuestion = ImageQuestion(type: "image", title: "Image question title", src: "url")
+		let page = Page(type: "page", title: "Page title", items: [GenericItem(imageQuestion)])
+		let sut = makeSut(page: page)
+		
+		sut.fetchItems()
+		
+		let items = sut.items
+		XCTAssertEqual(items.count, 1)
+		XCTAssertTrue(items[0] is ImageQuestionViewModel)
+	}
+	
 	static let defaultPage = Page(type: "page", title: "Main page", items: [])
 	
 	private func makeSut(page: Page = PageViewModelTests.defaultPage) -> PageViewModel  {
