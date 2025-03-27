@@ -21,6 +21,14 @@ final class RootPageViewController: UIPageViewController {
 		pc.isOpaque = true
 		return pc
 	}()
+	
+	private let errorLabel: UILabel = {
+		let label = UILabel()
+		label.textAlignment = .center
+		label.numberOfLines = 0
+		label.textColor = .red
+		return label
+	}()
 
 	init(repository: GenericItemRepositoryProtocol, coordinator: PageCoordinatorProtocol) {
 		self.repository = repository
@@ -44,9 +52,17 @@ final class RootPageViewController: UIPageViewController {
 		view.backgroundColor = .white
 		
 		view.addSubview(pageControl)
+		view.addSubview(errorLabel)
+		errorLabel.translatesAutoresizingMaskIntoConstraints = false
+		
 		NSLayoutConstraint.activate([
 			pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
+			pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+			
+			errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+			errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
 		])
 	}
 
@@ -55,9 +71,9 @@ final class RootPageViewController: UIPageViewController {
 			guard let self = self else { return }
 			switch result {
 			case .success(let topLevelPages):
-				DispatchQueue.main.async { [weak self] in
-					guard let self = self else { return }
-					self.pages = createPageControllers(from: topLevelPages, coordinator: self.coordinator)
+				DispatchQueue.main.async {
+					self.errorLabel.isHidden = true
+					self.pages = self.createPageControllers(from: topLevelPages, coordinator: self.coordinator)
 					if let firstPage = self.pages.first {
 						self.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
 						self.coordinator.didSwitchToPage(firstPage)
@@ -67,7 +83,10 @@ final class RootPageViewController: UIPageViewController {
 					self.pageControl.currentPage = 0
 				}
 			case .failure(let error):
-				print("Error fetching pages: \(error)")
+				DispatchQueue.main.async {
+					self.errorLabel.isHidden = false
+					self.errorLabel.text = error.localizedDescription
+				}
 			}
 		}
 	}

@@ -57,10 +57,6 @@ final class PageViewController: UIViewController {
 					self.errorLabel.isHidden = true
 					self.tableView.reloadData()
 				}
-			case .error(let error):
-				self.activityIndicator.stopAnimating()
-				self.errorLabel.isHidden = false
-				self.errorLabel.text = "Error: \(error.localizedDescription)"
 			}
 		}
 		viewModel.fetchItems()

@@ -16,7 +16,6 @@ final class PageViewModel: GenericItemViewModel {
 		case idle
 		case loading
 		case loaded([GenericItemViewModel])
-		case error(Error)
 	}
 	
 	private let page: Page
@@ -111,8 +110,6 @@ extension PageViewModel.ViewState: Equatable {
 			return true
 		case (.loaded(let lhsItems), .loaded(let rhsItems)):
 			return lhsItems.map { $0.type } == rhsItems.map { $0.type }
-		case (.error(let lhsError), .error(let rhsError)):
-			return lhsError.localizedDescription == rhsError.localizedDescription
 		default:
 			return false
 		}
