@@ -62,6 +62,21 @@ final class PageViewModelTests: XCTestCase {
 		XCTAssertTrue(items[0] is ImageQuestionViewModel)
 	}
 	
+	func testFlattenedItemsWithNestedSections() {
+		let nestedSection = Section(type: "section", title: "Section title", items: [])
+		let mockedSection = Section(type: "section", title: "Section title", items: [GenericItem(nestedSection)])
+		
+		let page = Page(type: "page", title: "Page title", items: [GenericItem(mockedSection)])
+		let sut = makeSut(page: page)
+		
+		sut.fetchItems()
+		let flattened = sut.flattenedItems()
+		
+		XCTAssertEqual(flattened.count, 2)
+		XCTAssertTrue(flattened[0] is SectionViewModel)
+		XCTAssertTrue(flattened[1] is SectionViewModel)
+	}
+	
 	static let defaultPage = Page(type: "page", title: "Main page", items: [])
 	
 	private func makeSut(page: Page = PageViewModelTests.defaultPage) -> PageViewModel  {
