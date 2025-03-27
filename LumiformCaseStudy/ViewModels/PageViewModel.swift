@@ -12,33 +12,11 @@ protocol GenericItemViewModel {
 }
 
 final class PageViewModel: GenericItemViewModel {
-	enum ViewState {
-		case idle
-		case loading
-		case loaded([GenericItemViewModel])
-	}
-	
 	private let page: Page
 	private let imageService: ImageService
-	var type: String { return "page" }
-	var stateChanged: ((ViewState) -> Void)?
-	
-	private(set) var currentState: ViewState = .idle {
-		didSet {
-			stateChanged?(currentState)
-		}
-	}
-	
-	var items: [GenericItemViewModel] {
-		switch currentState {
-		case .loaded(let viewModels):
-			return viewModels
-		default:
-			return []
-		}
-	}
-	
 	private var _title: String
+	var items = [GenericItemViewModel]()
+	var type: String { return "page" }
 	
 	var title: String {
 		_title
@@ -51,9 +29,7 @@ final class PageViewModel: GenericItemViewModel {
 	}
 	
 	func fetchItems() {
-		currentState = .loading
-		let viewModels = transformToViewModels(page)
-		currentState = .loaded(viewModels)
+		items = transformToViewModels(page)
 	}
 	
 	private func transformToViewModels(_ page: Page) -> [GenericItemViewModel] {
@@ -99,18 +75,5 @@ final class PageViewModel: GenericItemViewModel {
 		}
 		
 		return result
-	}
-}
-
-extension PageViewModel.ViewState: Equatable {
-	static func == (lhs: PageViewModel.ViewState, rhs: PageViewModel.ViewState) -> Bool {
-		switch (lhs, rhs) {
-		case (.idle, .idle), (.loading, .loading):
-			return true
-		case (.loaded(let lhsItems), .loaded(let rhsItems)):
-			return lhsItems.map { $0.type } == rhsItems.map { $0.type }
-		default:
-			return false
-		}
 	}
 }

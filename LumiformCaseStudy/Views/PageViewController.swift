@@ -10,7 +10,6 @@ import UIKit
 final class PageViewController: UIViewController {
 	let viewModel: PageViewModel
 	private let tableView = UITableView()
-	private let activityIndicator = UIActivityIndicatorView(style: .large)
 	private let coordinator: PageCoordinatorProtocol
 	private let sectionCell = "SectionCell"
 	private let textQuestionCell = "TextQuestionCell"
@@ -29,25 +28,6 @@ final class PageViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		setupUI()
-		setupViewModel()
-	}
-	
-	private func setupViewModel() {
-		viewModel.stateChanged = { [weak self] state in
-			guard let self = self else { return }
-			
-			switch state {
-			case .idle:
-				self.activityIndicator.stopAnimating()
-			case .loading:
-				self.activityIndicator.startAnimating()
-			case .loaded:
-				DispatchQueue.main.async {
-					self.activityIndicator.stopAnimating()
-					self.tableView.reloadData()
-				}
-			}
-		}
 		viewModel.fetchItems()
 	}
 
@@ -67,17 +47,11 @@ final class PageViewController: UIViewController {
 		view.addSubview(tableView)
 		tableView.translatesAutoresizingMaskIntoConstraints = false
 		
-		view.addSubview(activityIndicator)
-		activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-		
 		NSLayoutConstraint.activate([
 			tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
 			tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 			tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-			
-			activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+			tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
 		])
 	}
 }

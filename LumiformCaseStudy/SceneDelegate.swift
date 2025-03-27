@@ -20,7 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 		let repository = GenericItemRepository(networkService: networkService, itemMapper: itemMapper)
 		let navigationController = UINavigationController()
 		let coordinator = PageCoordinator(navigationController: navigationController)
-		let rootVC = RootPageViewController(repository: repository, coordinator: coordinator)
+		let rootPageViewModel = RootPageViewModel(repository: repository)
+		let rootVC = RootPageViewController(viewModel: rootPageViewModel, coordinator: coordinator)
 		navigationController.setViewControllers([rootVC], animated: false)
 		window?.rootViewController = navigationController
 		window?.makeKeyAndVisible()

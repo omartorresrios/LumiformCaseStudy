@@ -8,8 +8,9 @@
 import UIKit
 
 final class RootPageViewController: UIPageViewController {
+	private let activityIndicator = UIActivityIndicatorView(style: .large)
 	private var pages: [PageViewController] = []
-	private let repository: GenericItemRepositoryProtocol
+	private let viewModel: RootPageViewModel
 	private var coordinator: PageCoordinatorProtocol
 	private let serviceFactory: ServiceFactory
 	
@@ -31,10 +32,10 @@ final class RootPageViewController: UIPageViewController {
 		return label
 	}()
 
-	init(repository: GenericItemRepositoryProtocol, 
+	init(viewModel: RootPageViewModel,
 		 coordinator: PageCoordinatorProtocol,
 		 serviceFactory: ServiceFactory = DependencyFactory()) {
-		self.repository = repository
+		self.viewModel = viewModel
 		self.coordinator = coordinator
 		self.serviceFactory = serviceFactory
 		super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
@@ -57,6 +58,9 @@ final class RootPageViewController: UIPageViewController {
 		
 		view.addSubview(pageControl)
 		view.addSubview(errorLabel)
+		view.addSubview(activityIndicator)
+		
+		activityIndicator.translatesAutoresizingMaskIntoConstraints = false
 		errorLabel.translatesAutoresizingMaskIntoConstraints = false
 		
 		NSLayoutConstraint.activate([
@@ -66,16 +70,25 @@ final class RootPageViewController: UIPageViewController {
 			errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
 			errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
 			errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-			errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+			errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+			
+			activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
 		])
 	}
 
 	private func fetchPages() {
-		repository.fetchTopLevelPages { [weak self] result in
+		viewModel.stateDidChange = { [weak self] state in
 			guard let self = self else { return }
-			switch result {
-			case .success(let topLevelPages):
+			
+			switch state {
+			case .idle:
+				self.activityIndicator.stopAnimating()
+			case .loading:
+				self.activityIndicator.startAnimating()
+			case let .loaded(topLevelPages):
 				DispatchQueue.main.async {
+					self.activityIndicator.stopAnimating()
 					self.errorLabel.isHidden = true
 					self.pages = self.createPageControllers(from: topLevelPages, coordinator: self.coordinator)
 					if let firstPage = self.pages.first {
@@ -86,13 +99,13 @@ final class RootPageViewController: UIPageViewController {
 					self.pageControl.numberOfPages = self.pages.count
 					self.pageControl.currentPage = 0
 				}
-			case .failure(let error):
-				DispatchQueue.main.async {
-					self.errorLabel.isHidden = false
-					self.errorLabel.text = error.localizedDescription
-				}
+			case let .error(error):
+				self.activityIndicator.stopAnimating()
+				self.errorLabel.isHidden = false
+				self.errorLabel.text = error.localizedDescription
 			}
 		}
+		viewModel.fetchTopLevelPages()
 	}
 	
 	private func createPageControllers(from pages: [Page],
