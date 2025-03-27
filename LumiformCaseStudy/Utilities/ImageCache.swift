@@ -20,10 +20,13 @@ final class ImageCache {
 	
 	static func resizedImageData(_ imageData: Data, toSize size: CGSize) -> Data? {
 		guard let image = UIImage(data: imageData) else { return nil }
-		let renderer = UIGraphicsImageRenderer(size: size)
-		let resizedImage = renderer.image { _ in
-			image.draw(in: CGRect(origin: .zero, size: size))
+		let format = UIGraphicsImageRendererFormat()
+		format.opaque = false
+		let renderer = UIGraphicsImageRenderer(size: size, format: format)
+		let resizedImage = renderer.image { context in
+			let rect = CGRect(origin: .zero, size: size)
+			image.draw(in: rect, blendMode: .normal, alpha: 1.0)
 		}
-		return resizedImage.jpegData(compressionQuality: 0.8)
+		return resizedImage.pngData()
 	}
 }
