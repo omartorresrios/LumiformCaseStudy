@@ -87,22 +87,22 @@ final class URLSessionServiceTests: XCTestCase {
 	
 	final class MockURLProtocol: URLProtocol {
 		static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
-		
+	  
 		override class func canInit(with request: URLRequest) -> Bool {
-			// Handle all requests
-			return true
+			return request.url?.absoluteString == "https://run.mocky.io/v3/1800b96f-c579-49e5-b0b8-49856a36ce39"
 		}
-		
+	  
 		override class func canonicalRequest(for request: URLRequest) -> URLRequest {
 			return request
 		}
-		
+	  
 		override func startLoading() {
 			guard let handler = MockURLProtocol.requestHandler else {
 				XCTFail("Request handler not set")
+				client?.urlProtocolDidFinishLoading(self)
 				return
 			}
-			
+		  
 			do {
 				let (response, data) = try handler(request)
 				client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
@@ -112,9 +112,7 @@ final class URLSessionServiceTests: XCTestCase {
 				client?.urlProtocol(self, didFailWithError: error)
 			}
 		}
-		
-		override func stopLoading() {
-			// No-op for this simple mock
-		}
+	  
+		override func stopLoading() { }
 	}
 }
