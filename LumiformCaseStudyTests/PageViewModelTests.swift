@@ -15,6 +15,10 @@ final class PageViewModelTests: XCTestCase {
 		XCTAssertEqual(sut.type, "page")
 	}
 	
+	func testTitleReturnsPageTitle() {
+		XCTAssertEqual(sut.title, "Main page")
+	}
+	
 	private func makeSut() -> PageViewModel  {
 		let mockImageService = MockNetworkImageService()
 		let viewModel = PageViewModel(page: Page(type: "page",
