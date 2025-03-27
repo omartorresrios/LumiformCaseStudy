@@ -42,6 +42,14 @@ final class PageViewModelTests: XCTestCase {
 		XCTAssertTrue(sut.items[2] is ImageQuestionViewModel)
 	}
 	
+	func testFetchItemsWithEmptyPage() {
+		let sut = makeSut()
+		
+		sut.fetchItems()
+		
+		XCTAssertTrue(sut.items.isEmpty)
+	}
+	
 	static let defaultPage = Page(type: "page", title: "Main page", items: [])
 	
 	private func makeSut(page: Page = PageViewModelTests.defaultPage) -> PageViewModel  {
