@@ -37,6 +37,7 @@
 		24FBD3CC2D95ACF7006ABCDD /* RootPageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3CB2D95ACF7006ABCDD /* RootPageViewModel.swift */; };
 		24FBD3CE2D95BA97006ABCDD /* RootPageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3CD2D95BA97006ABCDD /* RootPageViewModelTests.swift */; };
 		24FBD3D02D95BD56006ABCDD /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3CF2D95BD56006ABCDD /* TestHelper.swift */; };
+		24FBD3D22D95C0D0006ABCDD /* URLSessionServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24FBD3D12D95C0D0006ABCDD /* URLSessionServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		24FBD3CB2D95ACF7006ABCDD /* RootPageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPageViewModel.swift; sourceTree = "<group>"; };
 		24FBD3CD2D95BA97006ABCDD /* RootPageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootPageViewModelTests.swift; sourceTree = "<group>"; };
 		24FBD3CF2D95BD56006ABCDD /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
+		24FBD3D12D95C0D0006ABCDD /* URLSessionServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionServiceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,6 +149,7 @@
 				24FBD3B92D921847006ABCDD /* PageViewModelTests.swift */,
 				24FBD3CD2D95BA97006ABCDD /* RootPageViewModelTests.swift */,
 				24FBD3CF2D95BD56006ABCDD /* TestHelper.swift */,
+				24FBD3D12D95C0D0006ABCDD /* URLSessionServiceTests.swift */,
 			);
 			path = LumiformCaseStudyTests;
 			sourceTree = "<group>";
@@ -378,6 +381,7 @@
 				24FBD38F2D8F3301006ABCDD /* ModelTests.swift in Sources */,
 				24FBD3CE2D95BA97006ABCDD /* RootPageViewModelTests.swift in Sources */,
 				24FBD3BA2D921847006ABCDD /* PageViewModelTests.swift in Sources */,
+				24FBD3D22D95C0D0006ABCDD /* URLSessionServiceTests.swift in Sources */,
 				24FBD3D02D95BD56006ABCDD /* TestHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
