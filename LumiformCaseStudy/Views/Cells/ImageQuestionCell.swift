@@ -14,6 +14,22 @@ protocol ImageQuestionCellDelegate: AnyObject {
 final class ImageQuestionCell: UITableViewCell {
 	private let questionImageView = UIImageView()
 	private let containerView = UIView()
+	
+	private let loadingIndicator: UIActivityIndicatorView = {
+		let indicator = UIActivityIndicatorView(style: .medium)
+		indicator.color = .gray
+		indicator.hidesWhenStopped = true
+		return indicator
+	}()
+	
+	private let errorLabel: UILabel = {
+		let label = UILabel()
+		label.textAlignment = .center
+		label.numberOfLines = 0
+		label.textColor = .red
+		return label
+	}()
+	
 	weak var delegate: ImageQuestionCellDelegate?
 	private var viewModel: ImageQuestionViewModel?
 	
@@ -44,9 +60,13 @@ final class ImageQuestionCell: UITableViewCell {
 		
 		contentView.addSubview(containerView)
 		containerView.addSubview(questionImageView)
+		containerView.addSubview(loadingIndicator)
+		containerView.addSubview(errorLabel)
 		
 		containerView.translatesAutoresizingMaskIntoConstraints = false
 		questionImageView.translatesAutoresizingMaskIntoConstraints = false
+		loadingIndicator.translatesAutoresizingMaskIntoConstraints = false
+		errorLabel.translatesAutoresizingMaskIntoConstraints = false
 		
 		NSLayoutConstraint.activate([
 			containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
@@ -57,18 +77,49 @@ final class ImageQuestionCell: UITableViewCell {
 			questionImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 10),
 			questionImageView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -10),
 			questionImageView.heightAnchor.constraint(equalToConstant: 150),
-			questionImageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10)
+			questionImageView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -10),
+			
+			loadingIndicator.centerXAnchor.constraint(equalTo: questionImageView.centerXAnchor),
+			loadingIndicator.centerYAnchor.constraint(equalTo: questionImageView.centerYAnchor),
+			
+			errorLabel.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+			errorLabel.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+			errorLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 20),
+			errorLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -20),
 		])
 	}
 	
 	func configure(with viewModel: ImageQuestionViewModel) {
 		self.viewModel = viewModel
 		containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
-											   constant: 16 + CGFloat(viewModel.nestingLevel * 16)).isActive = true
+											  constant: 16 + CGFloat(viewModel.nestingLevel * 16)).isActive = true
+		
+		viewModel.onStateChanged = { [weak self] state in
+			guard let self = self else { return }
+			switch state {
+			case .idle:
+				self.loadingIndicator.stopAnimating()
+				self.questionImageView.image = nil
+				
+			case .loading:
+				self.loadingIndicator.startAnimating()
+				self.questionImageView.image = nil
+				
+			case .loaded:
+				self.loadingIndicator.stopAnimating()
+				
+			case .error(let error):
+				self.loadingIndicator.stopAnimating()
+				self.questionImageView.image = nil
+				errorLabel.text = error.localizedDescription
+			}
+		}
 		
 		viewModel.onImageLoaded = { [weak self] data in
 			let smallImage = UIImage(data: data)
-			self?.questionImageView.image = smallImage
+			DispatchQueue.main.async {
+				self?.questionImageView.image = smallImage
+			}
 		}
 		viewModel.loadImage(fullSize: false)
 	}
