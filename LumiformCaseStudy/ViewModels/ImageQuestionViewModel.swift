@@ -9,15 +9,23 @@ import Foundation
 
 final class ImageQuestionViewModel: GenericItemViewModel {
 	private let imageService: ImageService
-	let question: ImageQuestion
-	let nestingLevel: Int
+	private let question: ImageQuestion
+	private let _nestingLevel: Int
 	var onImageLoaded: ((Data) -> Void)?
 	var type: String { return "image" }
+	
+	var questionTitle: String {
+		question.title
+	}
+	
+	var nestingLevel: Int {
+		_nestingLevel
+	}
 	
 	init(imageService: ImageService, question: ImageQuestion, nestingLevel: Int = 0) {
 		self.imageService = imageService
 		self.question = question
-		self.nestingLevel = nestingLevel
+		self._nestingLevel = nestingLevel
 	}
 	
 	func loadImage(fullSize: Bool) {

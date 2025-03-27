@@ -11,7 +11,7 @@ protocol ImageService {
 	func fetchImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void)
 }
 
-class NetworkImageService: ImageService {
+final class NetworkImageService: ImageService {
 	func fetchImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
 		if let cachedData = ImageCache.cachedData(forKey: url.absoluteString) {
 			completion(.success(cachedData))

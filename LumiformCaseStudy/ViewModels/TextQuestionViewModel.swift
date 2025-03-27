@@ -6,12 +6,20 @@
 //
 
 final class TextQuestionViewModel: GenericItemViewModel {
-	let question: TextQuestion
-	let nestingLevel: Int
+	private let question: TextQuestion
+	private let _nestingLevel: Int
 	var type: String { return "text" }
+	
+	var questionTitle: String {
+		question.title
+	}
+	
+	var nestingLevel: Int {
+		_nestingLevel
+	}
 	
 	init(question: TextQuestion, nestingLevel: Int = 0) {
 		self.question = question
-		self.nestingLevel = nestingLevel
+		self._nestingLevel = nestingLevel
 	}
 }

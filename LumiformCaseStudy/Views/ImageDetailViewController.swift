@@ -31,7 +31,7 @@ final class ImageDetailViewController: UIViewController {
 	private func setupUI() {
 		view.backgroundColor = .white
 		
-		titleLabel.text = viewModel.question.title
+		titleLabel.text = viewModel.questionTitle
 		titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
 		titleLabel.numberOfLines = 0
 		titleLabel.textAlignment = .center
