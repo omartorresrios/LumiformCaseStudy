@@ -59,6 +59,32 @@ final class RootPageViewModelTests: XCTestCase {
 			}
 		}
 	}
+	
+	func testFetchTopLevelPagesFailure() {
+		let (sut, mockRepository) = makeSut()
+		var states: [RootPageViewModel.ViewState] = []
+		let expectation = self.expectation(description: "State changes to error")
+		sut.stateDidChange = { state in
+			states.append(state)
+			if case .error = state {
+				expectation.fulfill()
+			}
+		}
+		let testError = NetworkError.invalidData
+		mockRepository.fetchPagesResult = .failure(testError)
+		
+		sut.fetchTopLevelPages()
+		
+		waitForExpectations(timeout: 1.0) { _ in
+			XCTAssertEqual(states.count, 2)
+			XCTAssertEqual(states[0], .loading)
+			if case .error(let error) = states[1] {
+				XCTAssertEqual(error, testError)
+			} else {
+				XCTFail("Expected error state")
+			}
+		}
+	}
 
 	private func makeSut() -> (RootPageViewModel, MockRepository) {
 		let repository = MockRepository()

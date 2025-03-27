@@ -17,7 +17,7 @@ enum FetchPagesResult {
 	case failure(NetworkError)
 }
 
-enum NetworkError: Error {
+enum NetworkError: Error, Equatable {
 	case invalidData
 	case connectivity
 	case invalidResponse(statusCode: Int)
