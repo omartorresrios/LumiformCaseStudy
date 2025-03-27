@@ -10,39 +10,23 @@ import XCTest
 
 final class PageViewModelTests: XCTestCase {
 	
-	func testInitialStateIsIdle() {
+	func testTypeReturnsPage() {
 		let sut = makeSut()
-		XCTAssertEqual(sut.currentState, .idle)
+		XCTAssertEqual(sut.type, "page")
 	}
 	
 	private func makeSut() -> PageViewModel  {
-		let mockServiceFactory = MockServiceFactory()
+		let mockImageService = MockNetworkImageService()
 		let viewModel = PageViewModel(page: Page(type: "page",
 												 title: "Main page",
 												 items: []),
-									  serviceFactory: mockServiceFactory)
+									  imageService: mockImageService)
 		return viewModel
 	}
 	
 	final class MockNetworkImageService: ImageService {
 		func fetchImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
 			
-		}
-	}
-	
-	final class MockServiceFactory: ServiceFactory {
-		var imageService: ImageService
-		
-		init(imageService: ImageService = MockNetworkImageService()) {
-			self.imageService = imageService
-		}
-		
-		func createNetworkImageService() -> ImageService {
-			return imageService
-		}
-		
-		func createPageControllers(from pages: [Page], coordinator: PageCoordinatorProtocol) -> [PageViewController] {
-			return []
 		}
 	}
 }
