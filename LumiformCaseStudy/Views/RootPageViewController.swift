@@ -8,9 +8,11 @@
 import UIKit
 
 final class RootPageViewController: UIPageViewController {
+	private let activityIndicator = UIActivityIndicatorView(style: .large)
 	private var pages: [PageViewController] = []
-	private let repository: GenericItemRepositoryProtocol
+	private let viewModel: RootPageViewModel
 	private var coordinator: PageCoordinatorProtocol
+	private let serviceFactory: ServiceFactory
 	
 	private let pageControl: UIPageControl = {
 		let pc = UIPageControl()
@@ -21,10 +23,21 @@ final class RootPageViewController: UIPageViewController {
 		pc.isOpaque = true
 		return pc
 	}()
+	
+	private let errorLabel: UILabel = {
+		let label = UILabel()
+		label.textAlignment = .center
+		label.numberOfLines = 0
+		label.textColor = .red
+		return label
+	}()
 
-	init(repository: GenericItemRepositoryProtocol, coordinator: PageCoordinatorProtocol) {
-		self.repository = repository
+	init(viewModel: RootPageViewModel,
+		 coordinator: PageCoordinatorProtocol,
+		 serviceFactory: ServiceFactory = DependencyFactory()) {
+		self.viewModel = viewModel
 		self.coordinator = coordinator
+		self.serviceFactory = serviceFactory
 		super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
 	}
 
@@ -44,47 +57,61 @@ final class RootPageViewController: UIPageViewController {
 		view.backgroundColor = .white
 		
 		view.addSubview(pageControl)
+		view.addSubview(errorLabel)
+		view.addSubview(activityIndicator)
+		
+		activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+		errorLabel.translatesAutoresizingMaskIntoConstraints = false
+		
 		NSLayoutConstraint.activate([
 			pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-			pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0)
+			pageControl.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0),
+			
+			errorLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			errorLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+			errorLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+			errorLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+			
+			activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+			activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
 		])
 	}
 
 	private func fetchPages() {
-		repository.fetchItem { [weak self] result in
+		viewModel.stateDidChange = { [weak self] state in
 			guard let self = self else { return }
-			switch result {
-			case .success(let item):
-				DispatchQueue.main.async { [weak self] in
-					guard let self = self else { return }
-					if let rootPage = item.asPage {
-						let topLevelPages = self.extractTopLevelPages(from: rootPage)
-						self.pages = topLevelPages.map { PageViewController(viewModel: PageViewModel(page: $0),
-																			coordinator: self.coordinator)}
-						if let firstPage = self.pages.first {
-							self.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
-							self.coordinator.didSwitchToPage(firstPage)
-							self.updateTitle(for: firstPage)
-						}
-						
-						self.pageControl.numberOfPages = self.pages.count
-						self.pageControl.currentPage = 0
+			
+			switch state {
+			case .idle:
+				self.activityIndicator.stopAnimating()
+			case .loading:
+				self.activityIndicator.startAnimating()
+			case let .loaded(topLevelPages):
+				DispatchQueue.main.async {
+					self.activityIndicator.stopAnimating()
+					self.errorLabel.isHidden = true
+					self.pages = self.createPageControllers(from: topLevelPages, coordinator: self.coordinator)
+					if let firstPage = self.pages.first {
+						self.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
+						self.coordinator.didSwitchToPage(firstPage)
+						self.updateTitle(for: firstPage)
 					}
+					self.pageControl.numberOfPages = self.pages.count
+					self.pageControl.currentPage = 0
 				}
-			case .failure(let error):
-				print("Error fetching pages: \(error)")
+			case let .error(error):
+				self.activityIndicator.stopAnimating()
+				self.errorLabel.isHidden = false
+				self.errorLabel.text = error.localizedDescription
 			}
 		}
+		viewModel.fetchTopLevelPages()
 	}
-
-	private func extractTopLevelPages(from page: Page) -> [Page] {
-		var topLevelPages: [Page] = [page]
-		for item in page.items {
-			if let nestedPage = item.asPage {
-				topLevelPages.append(nestedPage)
-			}
-		}
-		return topLevelPages
+	
+	private func createPageControllers(from pages: [Page],
+									   coordinator: PageCoordinatorProtocol) -> [PageViewController] {
+		serviceFactory.createPageControllers(from: pages,
+											 coordinator: coordinator)
 	}
 	
 	private func updateTitle(for pageVC: PageViewController) {

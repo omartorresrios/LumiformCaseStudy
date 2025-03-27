@@ -50,7 +50,8 @@ final class TextQuestionCell: UITableViewCell {
 	}
 	
 	func configure(with viewModel: TextQuestionViewModel) {
-		titleLabel.text = viewModel.question.title
+		titleLabel.text = viewModel.questionTitle
+		titleLabel.font = UIFont.systemFont(ofSize: 14, weight: .regular)
 		containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor,
 											   constant: 16 + CGFloat(viewModel.nestingLevel * 16)).isActive = true
 	}

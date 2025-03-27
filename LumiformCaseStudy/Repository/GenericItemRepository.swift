@@ -12,6 +12,11 @@ enum FetchDataResult {
 	case failure(NetworkError)
 }
 
+enum FetchPagesResult {
+	case success([Page])
+	case failure(NetworkError)
+}
+
 enum NetworkError: Error {
 	case invalidData
 	case connectivity
@@ -20,6 +25,7 @@ enum NetworkError: Error {
 
 protocol GenericItemRepositoryProtocol {
 	func fetchItem(completion: @escaping (FetchDataResult) -> Void)
+	func fetchTopLevelPages(completion: @escaping (FetchPagesResult) -> Void)
 }
 
 final class GenericItemRepository: GenericItemRepositoryProtocol {
@@ -40,5 +46,38 @@ final class GenericItemRepository: GenericItemRepositoryProtocol {
 				completion(.failure(.connectivity))
 			}
 		}
+	}
+	
+	func fetchTopLevelPages(completion: @escaping (FetchPagesResult) -> Void) {
+		networkService.fetchData { [weak self] result in
+			guard let self = self else { return }
+			switch result {
+			case let .success(data, response):
+				let fetchResult = GenericItemMapper.map(data, response)
+				switch fetchResult {
+				case .success(let item):
+					if let rootPage = item.asPage {
+						let topLevelPages = self.extractTopLevelPages(from: rootPage)
+						completion(.success(topLevelPages))
+					} else {
+						completion(.failure(.invalidData))
+					}
+				case .failure(let error):
+					completion(.failure(error))
+				}
+			case .failure:
+				completion(.failure(.connectivity))
+			}
+		}
+	}
+	
+	private func extractTopLevelPages(from page: Page) -> [Page] {
+		var topLevelPages: [Page] = [page]
+		for item in page.items {
+			if let nestedPage = item.asPage {
+				topLevelPages.append(nestedPage)
+			}
+		}
+		return topLevelPages
 	}
 }

@@ -12,43 +12,24 @@ protocol GenericItemViewModel {
 }
 
 final class PageViewModel: GenericItemViewModel {
-	enum ViewState {
-		case idle
-		case loading
-		case loaded([GenericItemViewModel])
-		case error(Error)
-	}
-	
 	private let page: Page
+	private let imageService: ImageService
+	private var _title: String
+	var items = [GenericItemViewModel]()
 	var type: String { return "page" }
-	var stateChanged: ((ViewState) -> Void)?
 	
-	private(set) var currentState: ViewState = .idle {
-		didSet {
-			stateChanged?(currentState)
-		}
+	var title: String {
+		_title
 	}
 	
-	var items: [GenericItemViewModel] {
-		switch currentState {
-		case .loaded(let viewModels):
-			return viewModels
-		default:
-			return []
-		}
-	}
-	
-	private(set) var title: String
-	
-	init(page: Page) {
+	init(page: Page, imageService: ImageService) {
 		self.page = page
-		self.title = page.title
+		self.imageService = imageService
+		self._title = page.title
 	}
 	
 	func fetchItems() {
-		currentState = .loading
-		let viewModels = transformToViewModels(page)
-		currentState = .loaded(viewModels)
+		items = transformToViewModels(page)
 	}
 	
 	private func transformToViewModels(_ page: Page) -> [GenericItemViewModel] {
@@ -60,25 +41,39 @@ final class PageViewModel: GenericItemViewModel {
 			} else if let textQuestion = item.asTextQuestion {
 				viewModels.append(TextQuestionViewModel(question: textQuestion))
 			} else if let imageQuestion = item.asImageQuestion {
-				viewModels.append(ImageQuestionViewModel(question: imageQuestion))
+				viewModels.append(ImageQuestionViewModel(imageService: imageService,
+														 question: imageQuestion))
 			}
 		}
 		
 		return viewModels
 	}
-}
-
-extension PageViewModel.ViewState: Equatable {
-	static func == (lhs: PageViewModel.ViewState, rhs: PageViewModel.ViewState) -> Bool {
-		switch (lhs, rhs) {
-		case (.idle, .idle), (.loading, .loading):
-			return true
-		case (.loaded(let lhsItems), .loaded(let rhsItems)):
-			return lhsItems.map { $0.type } == rhsItems.map { $0.type }
-		case (.error(let lhsError), .error(let rhsError)):
-			return lhsError.localizedDescription == rhsError.localizedDescription
-		default:
-			return false
+	
+	func flattenedItems() -> [GenericItemViewModel] {
+		var result: [GenericItemViewModel] = []
+		
+		for item in items {
+			result.append(item)
+			
+			if let sectionViewModel = item as? SectionViewModel {
+				result.append(contentsOf: flattenItems(for: sectionViewModel))
+			}
 		}
+		
+		return result
+	}
+	
+	private func flattenItems(for sectionViewModel: SectionViewModel) -> [GenericItemViewModel] {
+		var result: [GenericItemViewModel] = []
+		
+		for item in sectionViewModel.items {
+			result.append(item)
+			
+			if let nestedSection = item as? SectionViewModel {
+				result.append(contentsOf: flattenItems(for: nestedSection))
+			}
+		}
+		
+		return result
 	}
 }

@@ -6,25 +6,39 @@
 //
 
 final class SectionViewModel: GenericItemViewModel {
-	let section: Section
-	let nestingLevel: Int
+	private let section: Section
+	private let _nestingLevel: Int
+	private var _items: [GenericItemViewModel] = []
 	var type: String { return "section" }
-	var items: [GenericItemViewModel] = []
+	
+	var title: String {
+		return section.title
+	}
+	
+	var nestingLevel: Int {
+		_nestingLevel
+	}
+	
+	var items: [GenericItemViewModel] {
+		_items
+	}
 	
 	init(section: Section, nestingLevel: Int) {
 		self.section = section
-		self.nestingLevel = nestingLevel
+		self._nestingLevel = nestingLevel
 		setupItems()
 	}
 	
 	private func setupItems() {
 		for item in section.items {
 			if let section = item.asSection {
-				items.append(SectionViewModel(section: section, nestingLevel: nestingLevel + 1))
+				_items.append(SectionViewModel(section: section, nestingLevel: nestingLevel + 1))
 			} else if let textQuestion = item.asTextQuestion {
-				items.append(TextQuestionViewModel(question: textQuestion, nestingLevel: nestingLevel + 1))
+				_items.append(TextQuestionViewModel(question: textQuestion, nestingLevel: nestingLevel + 1))
 			} else if let imageQuestion = item.asImageQuestion {
-				items.append(ImageQuestionViewModel(question: imageQuestion, nestingLevel: nestingLevel + 1))
+				_items.append(ImageQuestionViewModel(imageService: NetworkImageService(),
+													question: imageQuestion,
+													nestingLevel: nestingLevel + 1))
 			}
 		}
 	}

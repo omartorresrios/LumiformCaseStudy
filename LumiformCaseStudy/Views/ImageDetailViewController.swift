@@ -31,7 +31,7 @@ final class ImageDetailViewController: UIViewController {
 	private func setupUI() {
 		view.backgroundColor = .white
 		
-		titleLabel.text = viewModel.question.title
+		titleLabel.text = viewModel.questionTitle
 		titleLabel.font = UIFont.systemFont(ofSize: 20, weight: .medium)
 		titleLabel.numberOfLines = 0
 		titleLabel.textAlignment = .center
@@ -59,14 +59,13 @@ final class ImageDetailViewController: UIViewController {
 			scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16),
 			scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
 			scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-			scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+			scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
 			
 			imageView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
 			imageView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
 			imageView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
 			imageView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-			imageView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
-			imageView.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
+			imageView.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
 		])
 		
 		let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap(_:)))
@@ -75,19 +74,17 @@ final class ImageDetailViewController: UIViewController {
 	}
 	
 	private func loadImage() {
-		if let url = URL(string: viewModel.question.src) {
-			let task = URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
-				guard let self = self, let data = data, error == nil, let image = UIImage(data: data) else {
-					print("Failed to download image: \(error?.localizedDescription ?? "Unknown error")")
-					return
-				}
-				
-				DispatchQueue.main.async {
-					self.imageView.image = image
-				}
-			}
-			task.resume()
+		viewModel.onImageLoaded = { [weak self] data in
+			guard let normalImage = UIImage(data: data) else { return }
+			self?.updateImage(normalImage)
 		}
+		viewModel.loadImage(fullSize: true)
+	}
+	
+	private func updateImage(_ image: UIImage) {
+		imageView.image = image
+		imageView.sizeToFit()
+		scrollView.contentSize = imageView.bounds.size
 	}
 	
 	@objc private func handleDoubleTap(_ gesture: UITapGestureRecognizer) {

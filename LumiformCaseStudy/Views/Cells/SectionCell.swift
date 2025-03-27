@@ -48,7 +48,7 @@ final class SectionCell: UITableViewCell {
 	}
 	
 	func configure(with viewModel: SectionViewModel) {
-		titleLabel.text = viewModel.section.title
+		titleLabel.text = viewModel.title
 		
 		let baseFontSize: CGFloat = 18
 		let fontSize = max(baseFontSize - CGFloat(viewModel.nestingLevel * 2), 14)
