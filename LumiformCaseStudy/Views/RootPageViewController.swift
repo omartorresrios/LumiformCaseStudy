@@ -51,40 +51,31 @@ final class RootPageViewController: UIPageViewController {
 	}
 
 	private func fetchPages() {
-		repository.fetchItem { [weak self] result in
+		repository.fetchTopLevelPages { [weak self] result in
 			guard let self = self else { return }
 			switch result {
-			case .success(let item):
+			case .success(let topLevelPages):
 				DispatchQueue.main.async { [weak self] in
 					guard let self = self else { return }
-					if let rootPage = item.asPage {
-						let topLevelPages = self.extractTopLevelPages(from: rootPage)
-						self.pages = topLevelPages.map { PageViewController(viewModel: PageViewModel(page: $0),
-																			coordinator: self.coordinator)}
-						if let firstPage = self.pages.first {
-							self.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
-							self.coordinator.didSwitchToPage(firstPage)
-							self.updateTitle(for: firstPage)
-						}
-						
-						self.pageControl.numberOfPages = self.pages.count
-						self.pageControl.currentPage = 0
+					self.pages = createPageControllers(from: topLevelPages, coordinator: self.coordinator)
+					if let firstPage = self.pages.first {
+						self.setViewControllers([firstPage], direction: .forward, animated: false, completion: nil)
+						self.coordinator.didSwitchToPage(firstPage)
+						self.updateTitle(for: firstPage)
 					}
+					self.pageControl.numberOfPages = self.pages.count
+					self.pageControl.currentPage = 0
 				}
 			case .failure(let error):
 				print("Error fetching pages: \(error)")
 			}
 		}
 	}
-
-	private func extractTopLevelPages(from page: Page) -> [Page] {
-		var topLevelPages: [Page] = [page]
-		for item in page.items {
-			if let nestedPage = item.asPage {
-				topLevelPages.append(nestedPage)
-			}
-		}
-		return topLevelPages
+	
+	private func createPageControllers(from pages: [Page],
+									   coordinator: PageCoordinatorProtocol) -> [PageViewController] {
+		DependencyContainer.shared.createPageControllers(from: pages,
+														 coordinator: coordinator)
 	}
 	
 	private func updateTitle(for pageVC: PageViewController) {

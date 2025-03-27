@@ -13,4 +13,8 @@ final class DependencyContainer {
 	lazy var networkImageService: NetworkImageService = {
 		return NetworkImageService()
 	}()
+	
+	func createPageControllers(from pages: [Page], coordinator: PageCoordinatorProtocol) -> [PageViewController] {
+		pages.map { PageViewController(viewModel: PageViewModel(page: $0), coordinator: coordinator) }
+	}
 }
