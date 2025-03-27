@@ -26,13 +26,7 @@ final class PageViewModelTests: XCTestCase {
 	}
 	
 	func testFetchItemsWithTheirRightTypes() {
-		let section = Section(type: "section", title: "Section title", items: [])
-		let textQuestion = TextQuestion(type: "text", title: "Text question title")
-		let imageQuestion = ImageQuestion(type: "image", title: "Image question title", src: "url")
-		let page = Page(type: "page", title: "Page title", items: [GenericItem(section),
-																   GenericItem(textQuestion),
-																   GenericItem(imageQuestion)])
-		let sut = makeSut(page: page)
+		let sut = makeSut(page: TestHelper.mockPage1())
 		
 		sut.fetchItems()
 		

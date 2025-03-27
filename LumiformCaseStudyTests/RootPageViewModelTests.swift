@@ -32,6 +32,34 @@ final class RootPageViewModelTests: XCTestCase {
 		XCTAssertEqual(states.first, .loading)
 	}
 	
+	func testFetchTopLevelPagesSuccess() {
+		let (sut, mockRepository) = makeSut()
+		var states: [RootPageViewModel.ViewState] = []
+		let expectation = self.expectation(description: "State changes to loaded")
+		sut.stateDidChange = { state in
+			states.append(state)
+			if case .loaded = state {
+				expectation.fulfill()
+			}
+		}
+		let testPages = [TestHelper.mockPage1(), TestHelper.mockPage2()]
+		mockRepository.fetchPagesResult = .success(testPages)
+		
+		sut.fetchTopLevelPages()
+		
+		waitForExpectations(timeout: 1.0) { _ in
+			XCTAssertEqual(states.count, 2)
+			XCTAssertEqual(states[0], .loading)
+			if case .loaded(let pages) = states[1] {
+				XCTAssertEqual(pages.count, 2)
+				XCTAssertEqual(pages[0].title, TestHelper.mockPage1().title)
+				XCTAssertEqual(pages[1].title, TestHelper.mockPage2().title)
+			} else {
+				XCTFail("Expected loaded state")
+			}
+		}
+	}
+
 	private func makeSut() -> (RootPageViewModel, MockRepository) {
 		let repository = MockRepository()
 		let viewModel = RootPageViewModel(repository: repository)
