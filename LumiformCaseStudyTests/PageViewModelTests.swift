@@ -77,6 +77,13 @@ final class PageViewModelTests: XCTestCase {
 		XCTAssertTrue(flattened[1] is SectionViewModel)
 	}
 	
+	func testFlattenedItemsWhenEmpty() {
+		let sut = makeSut()
+		let flattened = sut.flattenedItems()
+		
+		XCTAssertTrue(flattened.isEmpty)
+	}
+	
 	static let defaultPage = Page(type: "page", title: "Main page", items: [])
 	
 	private func makeSut(page: Page = PageViewModelTests.defaultPage) -> PageViewModel  {
