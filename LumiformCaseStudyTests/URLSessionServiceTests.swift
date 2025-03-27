@@ -55,6 +55,36 @@ final class URLSessionServiceTests: XCTestCase {
 		}
 	}
 	
+	func testFetchDataFailure() {
+		let testError = NSError(domain: "Test", code: -1, userInfo: nil)
+		let testURL = URL(string: "https://run.mocky.io/v3/1800b96f-c579-49e5-b0b8-49856a36ce39")!
+		
+		MockURLProtocol.requestHandler = { request in
+			XCTAssertEqual(request.url, testURL, "Request URL should match the service's URL")
+			throw testError
+		}
+		
+		var result: ServiceResult?
+		let expectation = self.expectation(description: "Completion called with failure")
+		
+		sut.fetchData { serviceResult in
+			result = serviceResult
+			expectation.fulfill()
+		}
+		
+		waitForExpectations(timeout: 1.0) { error in
+			if let error = error {
+				XCTFail("Expectation failed with error: \(error)")
+				return
+			}
+			guard case .failure(let error) = result else {
+				XCTFail("Expected failure result, got \(String(describing: result))")
+				return
+			}
+			XCTAssertEqual((error as NSError).code, testError.code, "Error code should match")
+		}
+	}
+	
 	final class MockURLProtocol: URLProtocol {
 		static var requestHandler: ((URLRequest) throws -> (HTTPURLResponse, Data))?
 		
